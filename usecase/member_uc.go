@@ -5,6 +5,8 @@ import (
 	"chi-rest/model"
 	"chi-rest/model/entity"
 	"chi-rest/server/request"
+	vm "chi-rest/viewmodel"
+
 	"strings"
 
 	"github.com/globalsign/mgo/bson"
@@ -20,7 +22,7 @@ type memberUsecase struct {
 
 // MemberUsercaseInterface ...
 type MemberUsercaseInterface interface {
-	FindByID(value string) (entity.MemberEntity, error)
+	FindByID(value string) (vm.MemberVM, error)
 	FindByPhone(value string) (entity.MemberEntity, error)
 	Register(req request.RegisterRequest) error
 }
@@ -30,16 +32,23 @@ func NewMemberUsecase(db *mgo.Session, cfg lib.Config) MemberUsercaseInterface {
 	return &memberUsecase{UC{db, cfg}}
 }
 
-func (uc *memberUsecase) FindByID(value string) (entity.MemberEntity, error) {
+func (uc *memberUsecase) FindByID(value string) (vm.MemberVM, error) {
 	var (
 		err error
 		me  entity.MemberEntity
 	)
 
+	vMember := vm.MemberVM{}
+
 	mod := model.NewMemberModel(uc.db, uc.cfg.GetString("database.mongo.db"))
 	me, err = mod.FindOneBy("_id", bson.ObjectIdHex(value))
 
-	return me, err
+	vMember.Fname = me.Fname
+	vMember.Lname = me.Lname
+	vMember.Email = me.Email
+	vMember.Phone = me.Phone
+
+	return vMember, err
 }
 
 // FindByPhone ...

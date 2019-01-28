@@ -29,7 +29,6 @@ func (h *MemberHandler) Profile(w http.ResponseWriter, r *http.Request) {
 // RegisterHandler register action in member controller
 func (h *MemberHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
-
 	req := request.RegisterRequest{}
 	if err = json.NewDecoder(r.Body).Decode(&req); err != nil {
 		sendBadRequest(w, err.Error())

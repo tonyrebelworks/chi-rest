@@ -1,0 +1,13 @@
+package: chi-rest
+import:
+- package: github.com/andboson/carbon
+- package: github.com/globalsign/mgo
+  subpackages:
+  - bson
+- package: github.com/go-chi/chi
+  subpackages:
+  - middleware
+- package: github.com/spf13/viper
+- package: golang.org/x/crypto
+  subpackages:
+  - bcrypt

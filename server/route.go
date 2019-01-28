@@ -12,9 +12,9 @@ func registerRoutes(db *mgo.Session, r *chi.Mux) {
 
 	r.Route("/v1", func(r chi.Router) {
 
-		member := api.MemberHandler{handlerType}
+		m := api.MemberHandler{handlerType}
 
-		r.Get("/me", member.Profile)
-		r.Post("/register", member.RegisterHandler)
+		r.Get("/me", m.Profile)
+		r.Post("/register", m.RegisterHandler)
 	})
 }
