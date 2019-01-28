@@ -4,6 +4,8 @@ import (
 	"chi-rest/lib"
 	"time"
 
+	"github.com/andboson/carbon"
+
 	"github.com/globalsign/mgo"
 )
 
@@ -14,8 +16,12 @@ type UC struct {
 }
 
 func today() time.Time {
-	loc, _ := time.LoadLocation("Asia/Jakarta")
-	now := time.Now().In(loc)
+	// loc, _ := time.LoadLocation("Asia/Jakarta")
+	// now := time.Now().In(loc)
 
-	return time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second(), 00, time.UTC)
+	// return time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second(), 00, time.UTC)
+	cb := carbon.Now()
+	cb.SetTZ("UTC")
+
+	return cb.Time
 }
