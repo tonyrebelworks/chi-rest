@@ -17,7 +17,7 @@ func (h *MemberHandler) Profile(w http.ResponseWriter, r *http.Request) {
 	uc := usecase.NewMemberUsecase(h.DB, h.Cfg)
 	me, err := uc.FindByID(r.URL.Query().Get("s"))
 	if err != nil {
-		sendBadRequest(w, err.Error())
+		SendBadRequest(w, err.Error())
 		return
 	}
 
@@ -29,16 +29,17 @@ func (h *MemberHandler) Profile(w http.ResponseWriter, r *http.Request) {
 // RegisterHandler register action in member controller
 func (h *MemberHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
+
 	req := request.RegisterRequest{}
 	if err = json.NewDecoder(r.Body).Decode(&req); err != nil {
-		sendBadRequest(w, err.Error())
+		SendBadRequest(w, err.Error())
 		return
 	}
 
 	memberUc := usecase.NewMemberUsecase(h.DB, h.Cfg)
 	err = memberUc.Register(req)
 	if err != nil {
-		sendBadRequest(w, err.Error())
+		SendBadRequest(w, err.Error())
 		return
 	}
 

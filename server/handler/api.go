@@ -19,19 +19,19 @@ func emptyJSONArr() []map[string]interface{} {
 }
 
 func sendSuccess(w http.ResponseWriter, payload interface{}) {
-	respondwithJSON(w, 200, 200, "Success", payload)
+	RespondWithJSON(w, 200, 200, "Success", payload)
 }
 
-func sendBadRequest(w http.ResponseWriter, message string) {
-	respondwithJSON(w, 400, 400, message, emptyJSONArr())
+func SendBadRequest(w http.ResponseWriter, message string) {
+	RespondWithJSON(w, 400, 400, message, emptyJSONArr())
 }
 
 func sendValidationError(w http.ResponseWriter, payload interface{}) {
-	respondwithJSON(w, 400, 405, "validation error", payload)
+	RespondWithJSON(w, 400, 405, "validation error", payload)
 }
 
-// respondwithJSON write json response format
-func respondwithJSON(w http.ResponseWriter, httpCode int, statCode int, message string, payload interface{}) {
+// RespondWithJSON write json response format
+func RespondWithJSON(w http.ResponseWriter, httpCode int, statCode int, message string, payload interface{}) {
 	respPayload := map[string]interface{}{
 		"statCode": statCode,
 		"statMsg":  message,

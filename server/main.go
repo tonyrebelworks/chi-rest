@@ -44,7 +44,7 @@ func main() {
 	}
 
 	// register middleware and application route
-	registerMiddleware(r)
+	registerMiddleware(db, r)
 	registerRoutes(db, r)
 
 	// run the app

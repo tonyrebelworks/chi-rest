@@ -6,6 +6,7 @@ import (
 	"chi-rest/model/entity"
 	"chi-rest/server/request"
 	vm "chi-rest/viewmodel"
+	"errors"
 
 	"strings"
 
@@ -40,6 +41,10 @@ func (uc *memberUsecase) FindByID(value string) (vm.MemberVM, error) {
 
 	vMember := vm.MemberVM{}
 
+	if value == "" {
+		return vMember, errors.New("The ID cannot be empty")
+	}
+
 	mod := model.NewMemberModel(uc.db, uc.cfg.GetString("database.mongo.db"))
 	me, err = mod.FindOneBy("_id", bson.ObjectIdHex(value))
 
@@ -61,6 +66,7 @@ func (uc *memberUsecase) FindByPhone(value string) (entity.MemberEntity, error) 
 	mod := model.NewMemberModel(uc.db, uc.cfg.GetString("database.mongo.db"))
 	me, err = mod.FindOneBy("phone", value)
 	me.CreatedAt = me.CreatedAt.UTC()
+
 	return me, err
 }
 
