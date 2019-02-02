@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"bytes"
 	"chi-rest/lib"
 	"net/http"
 
@@ -17,6 +18,11 @@ type AppMiddlewareInterface interface {
 type appMiddleware struct {
 	DB  *mgo.Session
 	Cfg lib.Config
+}
+
+type rw struct {
+	http.ResponseWriter
+	buf *bytes.Buffer
 }
 
 // NewAppMiddleware ...

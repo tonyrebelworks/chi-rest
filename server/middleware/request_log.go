@@ -11,11 +11,6 @@ import (
 	apiHandler "chi-rest/server/handler"
 )
 
-type rw struct {
-	http.ResponseWriter
-	buf *bytes.Buffer
-}
-
 func (mw *appMiddleware) RequestLoggerMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var (
