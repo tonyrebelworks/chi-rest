@@ -11,7 +11,7 @@ import (
 	apiHandler "chi-rest/server/handler"
 )
 
-type myResponseWriter struct {
+type rw struct {
 	http.ResponseWriter
 	buf *bytes.Buffer
 }
@@ -59,7 +59,7 @@ func (mw *appMiddleware) RequestLoggerMiddleware(next http.Handler) http.Handler
 			r.Body = ioutil.NopCloser(bytes.NewBuffer(payload))
 
 			// Create a response wrapper:
-			mrw := &myResponseWriter{
+			mrw := &rw{
 				ResponseWriter: w,
 				buf:            &bytes.Buffer{},
 			}
