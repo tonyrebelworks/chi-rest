@@ -1,4 +1,4 @@
-package lib
+package utils
 
 import (
 	"strings"
@@ -11,19 +11,19 @@ type Config interface {
 	GetString(key string) string
 	GetInt(key string) int
 	GetBool(key string) bool
-	initialize(basepath string)
+	initialize(basepath, configPath string)
 }
 
 type viperConfig struct{}
 
-func (v *viperConfig) initialize(basepath string) {
-	viper.SetEnvPrefix(`airpax-member`)
+func (v *viperConfig) initialize(basepath, configPath string) {
+	viper.SetEnvPrefix("dk_config")
 	viper.AutomaticEnv()
 
 	replacer := strings.NewReplacer(".", "_")
 	viper.SetEnvKeyReplacer(replacer)
 	viper.SetConfigType("json")
-	viper.SetConfigFile("../config.json")
+	viper.SetConfigFile(configPath)
 
 	err := viper.ReadInConfig()
 	if err != nil {
@@ -47,9 +47,9 @@ func (v *viperConfig) GetBool(key string) bool {
 }
 
 // NewViperConfig new instance of configuration
-func NewViperConfig(basepath string) Config {
+func NewViperConfig(basepath, configPath string) Config {
 	v := &viperConfig{}
-	v.initialize(basepath)
+	v.initialize(basepath, configPath)
 
 	return v
 }

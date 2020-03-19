@@ -4,7 +4,7 @@
         "host": "127.0.0.1:3000"
     },
     "database": {
-        "mongo": {
+        "mysql": {
             "host": "127.0.0.1:27018",
             "db": "inbox_db",
             "user": "",

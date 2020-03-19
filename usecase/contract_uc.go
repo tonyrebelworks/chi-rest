@@ -1,18 +1,34 @@
 package usecase
 
 import (
-	"chi-rest/lib"
+	"fmt"
 	"time"
 
-	"github.com/andboson/carbon"
+	"chi-rest/lib/mysql"
+	"chi-rest/lib/utils"
 
-	"github.com/globalsign/mgo"
+	"github.com/andboson/carbon"
 )
 
 // UC default usecase dependencies
 type UC struct {
-	db  *mgo.Session
-	cfg lib.Config
+	DB     *mysql.Info
+	Config utils.Config
+}
+
+// GetData ...
+func (uc UC) GetData() error {
+	type res struct {
+		Name  string `db:"name"`
+		Email string `db:"email"`
+	}
+	r := []res{}
+	err := uc.DB.Connect().Select(&r, "SELECT name, email FROM borrowers LIMIT 10")
+	defer uc.DB.Close()
+
+	fmt.Println(r)
+
+	return err
 }
 
 func today() time.Time {
