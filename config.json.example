@@ -3,12 +3,7 @@
         "debug": true,
         "host": "127.0.0.1:3000"
     },
-    "database": {
-        "mysql": {
-            "host": "127.0.0.1:27018",
-            "db": "inbox_db",
-            "user": "",
-            "pass": ""
-        }
+    "db": {
+        "mysql_dsn": "user:password@tcp(localhost:3306)/dbname?charset=utf8&parseTime=True&loc=Local"
     }
 }

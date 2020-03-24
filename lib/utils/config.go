@@ -17,7 +17,7 @@ type Config interface {
 type viperConfig struct{}
 
 func (v *viperConfig) initialize(basepath, configPath string) {
-	viper.SetEnvPrefix("dk_config")
+	viper.SetEnvPrefix("chi_rest_config")
 	viper.AutomaticEnv()
 
 	replacer := strings.NewReplacer(".", "_")

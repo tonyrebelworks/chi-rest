@@ -1,34 +1,18 @@
 package usecase
 
 import (
-	"fmt"
 	"time"
 
-	"chi-rest/lib/mysql"
 	"chi-rest/lib/utils"
 
 	"github.com/andboson/carbon"
+	"github.com/jmoiron/sqlx"
 )
 
 // UC default usecase dependencies
 type UC struct {
-	DB     *mysql.Info
+	DB     *sqlx.DB
 	Config utils.Config
-}
-
-// GetData ...
-func (uc UC) GetData() error {
-	type res struct {
-		Name  string `db:"name"`
-		Email string `db:"email"`
-	}
-	r := []res{}
-	err := uc.DB.Connect().Select(&r, "SELECT name, email FROM borrowers LIMIT 10")
-	defer uc.DB.Close()
-
-	fmt.Println(r)
-
-	return err
 }
 
 func today() time.Time {

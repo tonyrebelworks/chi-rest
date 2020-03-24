@@ -1,46 +1,24 @@
 package mysql
 
 import (
-	"fmt"
-	"time"
-
 	"github.com/jmoiron/sqlx"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// Info ...
-type Info struct {
-	Host string
-	DB   string
-	User string
-	Pass string
-	Loc  *time.Location
-}
-
 var (
-	db  *sqlx.DB
-	err error
+	db       *sqlx.DB
+	err      error
+	dbDriver = "mysql"
 )
 
 // Connect ...
-func (m Info) Connect() *sqlx.DB {
-	// "user:password@/tpc(localhost:3306)/dbname?charset=utf8&parseTime=True&loc=Local"
-	connStr := fmt.Sprintf(
-		"%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=%s",
-		m.User, m.Pass, m.Host, m.DB, m.Loc,
-	)
-
-	db, err = sqlx.Open("mysql", connStr)
-	if err != nil {
-		panic(err)
-	}
-	// defer db.Close()
-
+func Connect(dsn string) *sqlx.DB {
+	db := sqlx.MustConnect(dbDriver, dsn)
 	return db
 }
 
 // Close close the DB connection
-func (m Info) Close() error {
+func Close() error {
 	return db.Close()
 }
