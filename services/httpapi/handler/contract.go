@@ -10,10 +10,9 @@ import (
 	"reflect"
 	"strings"
 
+	"chi-rest/bootstrap"
 	"chi-rest/lib/utils"
 
-	ut "github.com/go-playground/universal-translator"
-	"github.com/jmoiron/sqlx"
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
@@ -45,10 +44,7 @@ const (
 
 // Contract ...
 type Contract struct {
-	DB         *sqlx.DB
-	Config     utils.Config
-	Validate   *validator.Validate
-	Translator ut.Translator
+	*bootstrap.App
 }
 
 // Bind bind the API request payload (body) into request struct.
@@ -79,7 +75,7 @@ func (h Contract) SendBadRequest(w http.ResponseWriter, message string) {
 // SendRequestValidationError Send validation error response to consumers.
 func (h Contract) SendRequestValidationError(w http.ResponseWriter, validationErrors validator.ValidationErrors) {
 	errorResponse := map[string][]string{}
-	errorTranslation := validationErrors.Translate(h.Translator)
+	errorTranslation := validationErrors.Translate(h.Validator.Translator)
 	for _, err := range validationErrors {
 		errKey := utils.Underscore(err.StructField())
 		errorResponse[errKey] = append(

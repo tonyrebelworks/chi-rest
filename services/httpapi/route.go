@@ -16,9 +16,7 @@ func RegisterRoutes(r *chi.Mux, app *bootstrap.App) {
 		httpSwagger.URL(app.Config.GetString("app.app_host")+"/swagger/doc.json"),
 	))
 
-	h := handler.Contract{
-		DB: app.DB,
-	}
+	h := handler.Contract{app}
 	r.Route("/v1", func(r chi.Router) {
 		r.Get("/", h.Hello)
 	})

@@ -15,8 +15,8 @@ import (
 // @Produce  json
 // @Success 200 {string} string	MsgSuccess
 // @Router / [get]
-func (h Contract) Hello(w http.ResponseWriter, r *http.Request) {
-	res, err := usecase.UC{DB: h.DB}.GetUser()
+func (h *Contract) Hello(w http.ResponseWriter, r *http.Request) {
+	res, err := usecase.UC{h.App}.GetUser()
 	if err != nil {
 		fmt.Println(err)
 		return

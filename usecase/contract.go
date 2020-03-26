@@ -3,16 +3,14 @@ package usecase
 import (
 	"time"
 
-	"chi-rest/lib/utils"
+	"chi-rest/bootstrap"
 
 	"github.com/andboson/carbon"
-	"github.com/jmoiron/sqlx"
 )
 
 // UC default usecase dependencies
 type UC struct {
-	DB     *sqlx.DB
-	Config utils.Config
+	*bootstrap.App
 }
 
 func today() time.Time {
