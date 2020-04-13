@@ -9,29 +9,29 @@ import (
 
 // JourneyEntity ...
 type JourneyEntity struct {
-	ID              uint             `db:"id" json:"id"`
-	Code            string           `db:"code" json:"code"`
-	JourneyName     string           `db:"journey_name" json:"journeyName"`
-	JourneySchedule string           `db:"journey_schedule" json:"journeySchedule"`
-	Salesman        string           `db:"salesman" json:"assignedAuditor"`
-	Sites           string           `db:"sites" json:"sites"`
-	Questionnaires  string           `db:"questionnaires" json:"questionnaires"`
-	Activity        string           `db:"activity" json:"activity"`
-	Signatures      string           `db:"signatures" json:"signatures"`
-	RequireSelfie   string           `db:"require_selfie" json:"requireSelfie"`
-	EmailTo         string           `db:"email_to" json:"emailTargets"`
-	StartJourney    sql.NullString   `db:"start_journey" json:"startJourney"`
-	FinishJourney   sql.NullString   `db:"finish_journey" json:"finishJourney"`
-	CreatedAt       sql.NullString   `db:"created_at" json:"createdAt"`
-	UpdatedAt       sql.NullString   `db:"updated_at" json:"updatedAt"`
-	DeletedAt       sql.NullString   `db:"deleted_at" json:"deletedAt"`
-	AssignedAuditor []SalesmanEntity `json:"assignedAuditor2"`
+	ID              uint           `db:"id" json:"id"`
+	Code            string         `db:"code" json:"code"`
+	JourneyName     string         `db:"journey_name" json:"journeyName"`
+	JourneySchedule string         `db:"journey_schedule" json:"journeySchedule"`
+	Salesman        string         `db:"salesman" json:"assignedAuditor"`
+	Sites           string         `db:"sites" json:"sites"`
+	Questionnaires  string         `db:"questionnaires" json:"questionnaires"`
+	Activity        string         `db:"activity" json:"activity"`
+	Signatures      string         `db:"signatures" json:"signatures"`
+	RequireSelfie   string         `db:"require_selfie" json:"requireSelfie"`
+	EmailTo         string         `db:"email_to" json:"emailTargets"`
+	StartJourney    sql.NullString `db:"start_journey" json:"startJourney"`
+	FinishJourney   sql.NullString `db:"finish_journey" json:"finishJourney"`
+	CreatedAt       sql.NullString `db:"created_at" json:"createdAt"`
+	UpdatedAt       sql.NullString `db:"updated_at" json:"updatedAt"`
+	DeletedAt       sql.NullString `db:"deleted_at" json:"deletedAt"`
+	// AssignedAuditor []SalesmanEntity `json:"assignedAuditor2"`
 }
 
 // SalesmanEntity ...
-type SalesmanEntity struct {
-	UserID string `json:"userID"`
-}
+// type SalesmanEntity struct {
+// 	UserID string `json:"userID"`
+// }
 
 type journeyOp struct{}
 
@@ -41,25 +41,24 @@ var JourneyOp = &journeyOp{}
 // GetAll ...
 func (op *journeyOp) GetAll(db *sqlx.DB) ([]JourneyEntity, error) {
 
-	activeQ := "WHERE deleted_at IS NULL"
-
-	// sql := "SELECT id, code, journey_name, journey_schedule, salesman, sites, questionnaires, signatures, require_selfie, email_to, activity, start_journey, finish_journey, created_at, updated_at FROM journey_plan   WHERE deleted_at IS NULL LIMIT 10"
+	activeQ := "WHERE deleted_at IS NULL "
+	limitQ := "LIMIT 10"
 
 	res := []JourneyEntity{}
-	err := db.Select(&res, "SELECT * FROM journey_plan "+activeQ)
+	err := db.Select(&res, "SELECT id, code, journey_name, journey_schedule, salesman, sites, questionnaires, signatures, require_selfie, email_to, activity, start_journey, finish_journey, created_at, updated_at FROM journey_plan "+activeQ+limitQ)
 
 	// fmt.Println(res)
 	return res, err
 }
 
 // GetDetail ...
-func (op *journeyOp) GetDetail(db *sqlx.DB, code string) ([]*JourneyEntity, error) {
-	r := []*JourneyEntity{}
-	sql := "SELECT id, code, journey_name, journey_schedule, salesman, sites, questionnaires, signatures, require_selfie, email_to, activity, start_journey, finish_journey, created_at, updated_at FROM journey_plan WHERE code = ? "
-	// fmt.Println(sql)
+func (op *journeyOp) GetDetail(db *sqlx.DB, code string) (JourneyEntity, error) {
+	var err error
 
-	err := db.Select(&r, sql, code)
-	return r, err
+	res := JourneyEntity{}
+	err = db.Get(&res, "SELECT * FROM journey_plan WHERE code = ? LIMIT 1", code)
+
+	return res, err
 }
 
 // Store ...
