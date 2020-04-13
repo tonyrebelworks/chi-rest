@@ -2,26 +2,54 @@ package usecase
 
 import (
 	"chi-rest/model"
+	"strings"
 	"time"
 )
 
 // GetAllJourney ...
-func (uc UC) GetAllJourney() ([]*model.Journey, error) {
-	dt, err := model.JourneyOp.GetAll(uc.DB)
+func (uc UC) GetAllJourney() ([]map[string]interface{}, error) {
+	data, err := model.JourneyOp.GetAll(uc.DB)
+	if err != nil {
+		return nil, err
+	}
 
-	// Res := model.JourneyVM{}
-	// for _, a := range dt {
-	// 	tempRes := model.SalesmanEntity{
-	// 		UserID: a.Salesman,
-	// 	}
+	// fmt.Println(data)
+	resMap := make([]map[string]interface{}, 0)
+	for _, a := range data {
+		assignedAuditorRes := make([]map[string]interface{}, 0)
 
-	// 	Res = append(Res, tempRes)
-	// }
-	return dt, err
+		assignAud := a.Salesman
+		arrAssignAud := strings.Split(assignAud, "|")
+		for i := range arrAssignAud {
+			assignedAuditorRes = append(assignedAuditorRes, map[string]interface{}{
+				"userID": arrAssignAud[i],
+			})
+		}
+
+		resMap = append(resMap, map[string]interface{}{
+			"id":              a.ID,
+			"code":            a.Code,
+			"journeyName":     a.JourneyName,
+			"journeySchedule": a.JourneySchedule,
+			"sites":           a.Sites,
+			"questionnaires":  a.Sites,
+			"activity":        a.Activity,
+			"signatures":      a.Signatures,
+			"requireSelfie":   a.RequireSelfie,
+			"emailTo":         a.EmailTo,
+			"startJourney":    a.StartJourney.String,
+			"finishJourney":   a.FinishJourney.String,
+			"createdAt":       a.CreatedAt.String,
+			"updatedAt":       a.UpdatedAt.String,
+			"assignedAuditor": assignedAuditorRes,
+		})
+	}
+
+	return resMap, err
 }
 
 // GetDetailJourney ...
-func (uc UC) GetDetailJourney(code string) ([]*model.Journey, error) {
+func (uc UC) GetDetailJourney(code string) ([]*model.JourneyEntity, error) {
 
 	dt, err := model.JourneyOp.GetDetail(uc.DB, code)
 	return dt, err
@@ -64,7 +92,7 @@ func (uc UC) UpdateJourney(
 }
 
 // DeleteJourney ...
-func (uc UC) DeleteJourney(code string) ([]*model.Journey, error) {
+func (uc UC) DeleteJourney(code string) ([]*model.JourneyEntity, error) {
 
 	dt, err := model.JourneyOp.DeleteJourney(uc.DB, code, time.Now().UTC())
 	return dt, err

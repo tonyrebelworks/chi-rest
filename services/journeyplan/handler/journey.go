@@ -25,7 +25,7 @@ func (h *Contract) GetAllJourney(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
-
+	// fmt.Println(res)
 	h.SendSuccess(w, res, nil)
 	return
 }
