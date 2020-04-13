@@ -16,13 +16,11 @@ import (
 // @Success 200 {string} string	MsgSuccess
 // @Router / [get]
 func (h *Contract) Hello(w http.ResponseWriter, r *http.Request) {
-	res, err := usecase.UC{h.App}.GetUser()
+	res, err := usecase.UC{h.App}.GetAllJourney()
 	if err != nil {
-
 		fmt.Println(err)
 		return
 	}
-	fmt.Println("Ini list get all journey")
 
 	h.SendSuccess(w, res, nil)
 	return

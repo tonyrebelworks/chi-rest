@@ -4,7 +4,7 @@ import (
 	"chi-rest/bootstrap"
 	"chi-rest/lib/mysql"
 	"chi-rest/lib/utils"
-	"chi-rest/services/httpapi"
+	"chi-rest/services/journeyplan"
 	"fmt"
 	"log"
 	"os"
@@ -57,13 +57,13 @@ func main() {
 	setup()
 	cmd := &cli.App{
 		Name:  "chi-rest",
-		Usage: "httpapi, cli",
+		Usage: "journeyplan, cli",
 		Commands: []*cli.Command{
 			{
-				Name:  "httpapi",
+				Name:  "journeyplan",
 				Usage: "Run the http 1/1 for API",
-				// Flags:  httpapi.Flags,
-				Action: httpapi.API{app}.Start,
+				// Flags:  journeyplan.Flags,
+				Action: journeyplan.API{app}.Start,
 				// After:  ListenSignal,
 			},
 		},
