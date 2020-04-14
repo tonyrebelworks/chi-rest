@@ -27,6 +27,6 @@ func (op *activityOp) GetByJourneyCode(db *sqlx.DB, code string) ([]ActivityEnti
 
 	res := []ActivityEntity{}
 	err = db.Select(&res, "SELECT id, code, user_code, username, journey_code, created_at FROM activity WHERE journey_code = ? ", code)
-	// fmt.Println(err)
+
 	return res, err
 }

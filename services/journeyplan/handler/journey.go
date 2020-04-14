@@ -25,7 +25,6 @@ func (h *Contract) GetAllJourney(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
-	// fmt.Println(res)
 	h.SendSuccess(w, res, nil)
 	return
 }
@@ -61,13 +60,46 @@ func (h *Contract) AddJourney(w http.ResponseWriter, r *http.Request) {
 
 	JourneyName := req.JourneyName
 	JourneySchedule := req.JourneySchedule
-	Salesman := req.Salesman
-	Sites := req.Sites
-	Questionnaires := req.Questionnaires
+	// Salesman := req.Salesman
+
+	if len(req.AssignedAuditor) > 0 {
+
+	}
+	assignedAuditors := make([]string, 0)
+	for _, aa := range req.AssignedAuditor {
+		assignedAuditors = append(assignedAuditors, aa.UserID)
+	}
+
+	if len(req.Sites) > 0 {
+
+	}
+	sitess := make([]string, 0)
+	for _, si := range req.Sites {
+		sitess = append(sitess, si.SiteID)
+	}
+
+	if len(req.Questionnaires) > 0 {
+
+	}
+	questionnairess := make([]string, 0)
+	for _, qu := range req.Questionnaires {
+		questionnairess = append(questionnairess, qu.QuestionnaireID)
+	}
+
+	if len(req.EmailTo) > 0 {
+
+	}
+	emails := make([]string, 0)
+	for _, em := range req.EmailTo {
+		emails = append(emails, em.Email)
+	}
+	// Sites := req.Sites
+	// Questionnaires := req.Questionnaires
 	Signatures := req.Signatures
 	RequireSelfie := req.RequireSelfie
-	EmailTo := req.EmailTo
-	Activity := req.Activity
+	Person := req.Person
+	// EmailTo := req.EmailTo
+	// Activity := req.Activity
 	// StartJourney := req.StartJourney
 	// FinishJourney := req.FinishJourney
 
@@ -77,16 +109,14 @@ func (h *Contract) AddJourney(w http.ResponseWriter, r *http.Request) {
 		code,
 		JourneyName,
 		JourneySchedule,
-		Salesman,
-		Sites,
-		Questionnaires,
+		assignedAuditors,
+		sitess,
+		questionnairess,
 		Signatures,
 		RequireSelfie,
-		EmailTo,
-		Activity,
-		// req.StartJourney,
-		// req.FinishJourney,
-		// req.CreatedAt,
+		Person,
+		emails,
+		// Activity,
 	)
 	if err != nil {
 		h.SendBadRequest(w, err.Error())
@@ -106,6 +136,7 @@ func (h *Contract) UpdateJourney(w http.ResponseWriter, r *http.Request) {
 		h.SendBadRequest(w, err.Error())
 		return
 	}
+
 	// if err = h.Handler.Validate.Struct(req); err != nil {
 	// 	h.SendRequestValidationError(w, err.(validator.ValidationErrors))
 	// 	return

@@ -2,7 +2,7 @@ package model
 
 import (
 	"database/sql"
-	"fmt"
+	"strings"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -10,16 +10,17 @@ import (
 
 // JourneyEntity ...
 type JourneyEntity struct {
-	ID                    uint           `db:"id" json:"id"`
-	Code                  string         `db:"code" json:"code"`
-	JourneyName           string         `db:"journey_name" json:"journeyName"`
-	JourneySchedule       string         `db:"journey_schedule" json:"journeySchedule"`
-	Salesman              string         `db:"salesman" json:"assignedAuditor"`
+	ID              uint   `db:"id" json:"id"`
+	Code            string `db:"code" json:"code"`
+	JourneyName     string `db:"journey_name" json:"journeyName"`
+	JourneySchedule string `db:"journey_schedule" json:"journeySchedule"`
+	Salesman        string `db:"salesman" json:"assignedAuditor"`
+	// Salesman              []SalesmanEntity `db:"salesman" json:"assignedAuditor"`
 	Sites                 string         `db:"sites" json:"sites"`
 	Questionnaires        string         `db:"questionnaires" json:"questionnaires"`
 	Signatures            string         `db:"signatures" json:"signatures"`
 	RequireSelfie         bool           `db:"require_selfie" json:"requireSelfie"`
-	Person                string         `db:"person" json:"person"`
+	Person                sql.NullString `db:"person" json:"person"`
 	EmailTo               string         `db:"email_to" json:"emailTargets"`
 	StartJourney          sql.NullString `db:"start_journey" json:"startJourney"`
 	FinishJourney         sql.NullString `db:"finish_journey" json:"finishJourney"`
@@ -65,7 +66,7 @@ func (op *journeyOp) GetDetail(db *sqlx.DB, code string) (JourneyEntity, error) 
 
 	res := JourneyEntity{}
 	err = db.Get(&res, "SELECT * FROM journey_plan WHERE code = ? LIMIT 1", code)
-	fmt.Println(err)
+
 	return res, err
 }
 
@@ -75,13 +76,13 @@ func (op *journeyOp) Store(
 	code string,
 	journeyName string,
 	journeySchedule int64,
-	salesman string,
-	sites string,
-	questionnaires string,
+	salesman []string,
+	sites []string,
+	questionnaires []string,
 	signatures int64,
 	requireSelfie int64,
-	emailTo string,
-	activity string,
+	person string,
+	emailTo []string,
 	// startJourney string,
 	// finishJourney string,
 	changedAt time.Time,
@@ -90,8 +91,20 @@ func (op *journeyOp) Store(
 
 	createdAt := changedAt.Format("2006-01-02 15:04:05")
 
-	var sql = "INSERT INTO journey_plan (code, journey_name, journey_schedule, salesman, sites, questionnaires, signatures, require_selfie, email_to, activity,created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-	res, err := db.Exec(sql, code, journeyName, journeySchedule, salesman, sites, questionnaires, signatures, requireSelfie, emailTo, activity, createdAt)
+	s := salesman
+	salesmans := strings.Join(s, "|")
+
+	si := sites
+	sitess := strings.Join(si, "|")
+
+	qu := questionnaires
+	questionnairess := strings.Join(qu, "|")
+
+	em := emailTo
+	emailTos := strings.Join(em, "|")
+
+	var sql = "INSERT INTO journey_plan (code, journey_name, journey_schedule, salesman, sites, questionnaires, signatures, require_selfie,person, email_to,created_at) VALUES ( ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	res, err := db.Exec(sql, code, journeyName, journeySchedule, salesmans, sitess, questionnairess, signatures, requireSelfie, person, emailTos, createdAt)
 	if err != nil {
 		return 0, err
 	}
@@ -100,7 +113,7 @@ func (op *journeyOp) Store(
 	if err != nil {
 		return 0, err
 	}
-
+	// fmt.Println(lID)
 	return lID, nil
 }
 

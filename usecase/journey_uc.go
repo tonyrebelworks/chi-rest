@@ -14,7 +14,6 @@ func (uc UC) GetAllJourney() ([]map[string]interface{}, error) {
 		return nil, err
 	}
 
-	// fmt.Println(data)
 	resMap := make([]map[string]interface{}, 0)
 	for _, a := range data {
 		dataActivity, err := model.ActivityOp.GetByJourneyCode(uc.DB, a.Code)
@@ -65,7 +64,6 @@ func (uc UC) GetAllJourney() ([]map[string]interface{}, error) {
 				Username: a.Username,
 				Datetime: a.Datetime.String,
 			}
-			// fmt.Println(a)
 			activityRes = append(activityRes, tempRes)
 		}
 
@@ -77,7 +75,7 @@ func (uc UC) GetAllJourney() ([]map[string]interface{}, error) {
 			"activity":              activityRes,
 			"signatures":            a.Signatures,
 			"requireSelfie":         a.RequireSelfie,
-			"person":                a.Person,
+			"person":                a.Person.String,
 			"startJourney":          a.StartJourney.String,
 			"finishJourney":         a.FinishJourney.String,
 			"isDueToday":            true,
@@ -151,7 +149,6 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 	if err != nil {
 		return viewmodel.JourneyPlanVM{}, err
 	}
-	// fmt.Println(dataActivity)
 
 	activityRes := []viewmodel.ActivityVM{}
 	for _, a := range dataActivity {
@@ -161,7 +158,7 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 			Datetime: a.Datetime.String,
 		}
 		activityRes = append(activityRes, tempRes)
-		// fmt.Println(activityRes)
+
 	}
 
 	res := viewmodel.JourneyPlanVM{
@@ -176,7 +173,7 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 		Activity:              activityRes,
 		Signatures:            data.Signatures,
 		RequireSelfie:         data.RequireSelfie,
-		Person:                data.Person,
+		Person:                data.Person.String,
 		CreatedAt:             data.CreatedAt.String,
 		UpdatedAt:             data.UpdatedAt.String,
 		IsDueToday:            true,
@@ -199,16 +196,17 @@ func (uc UC) StoreJourney(
 	code string,
 	journeyName string,
 	journeySchedule int64,
-	salesman string,
-	sites string,
-	questionnaires string,
+	salesman []string,
+	sites []string,
+	questionnaires []string,
 	signatures int64,
 	requireSelfie int64,
-	emailTo string,
-	activity string,
+	person string,
+	emailTo []string,
 
 ) (int64, error) {
-	dt, err := model.JourneyOp.Store(uc.DB, code, journeyName, journeySchedule, salesman, sites, questionnaires, signatures, requireSelfie, emailTo, activity, time.Now().UTC())
+
+	dt, err := model.JourneyOp.Store(uc.DB, code, journeyName, journeySchedule, salesman, sites, questionnaires, signatures, requireSelfie, person, emailTo, time.Now().UTC())
 	return dt, err
 }
 
