@@ -70,21 +70,34 @@ func (uc UC) GetAllJourney() ([]map[string]interface{}, error) {
 		}
 
 		resMap = append(resMap, map[string]interface{}{
-			"id":              a.ID,
-			"code":            a.Code,
-			"journeyName":     a.JourneyName,
-			"journeySchedule": a.JourneySchedule,
-			"activity":        activityRes,
-			"signatures":      a.Signatures,
-			"requireSelfie":   a.RequireSelfie,
-			"startJourney":    a.StartJourney.String,
-			"finishJourney":   a.FinishJourney.String,
-			"createdAt":       a.CreatedAt.String,
-			"updatedAt":       a.UpdatedAt.String,
-			"sites":           sitesRes,
-			"questionnaires":  questionnairesRes,
-			"emailTargets":    emailRes,
-			"assignedAuditor": assignedAuditorRes,
+			"id":                    a.ID,
+			"code":                  a.Code,
+			"journeyName":           a.JourneyName,
+			"journeySchedule":       a.JourneySchedule,
+			"activity":              activityRes,
+			"signatures":            a.Signatures,
+			"requireSelfie":         a.RequireSelfie,
+			"person":                a.Person,
+			"startJourney":          a.StartJourney.String,
+			"finishJourney":         a.FinishJourney.String,
+			"isDueToday":            true,
+			"isDraft":               false,
+			"isMakeUp":              false,
+			"todayCompletedCount":   0,
+			"completedCount":        0,
+			"todayScheduleCount":    1,
+			"isCompletedToday":      false,
+			"isCompletedThisPeriod": false,
+			"scheduleCount":         7,
+			"isScheduleThisPeriod":  true,
+			"createdAt":             a.CreatedAt.String,
+			"createdBy":             a.CreatedBy.String,
+			"updatedAt":             a.UpdatedAt.String,
+			"updatedBy":             a.UpdatedBy.String,
+			"sites":                 sitesRes,
+			"questionnaires":        questionnairesRes,
+			"emailTargets":          emailRes,
+			"assignedAuditor":       assignedAuditorRes,
 		})
 	}
 
@@ -125,19 +138,57 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 		})
 	}
 
+	emailRes := make([]viewmodel.EmailTargetsVM, 0)
+	email := data.EmailTo
+	arrEmail := strings.Split(email, "|")
+	for i := range arrEmail {
+		emailRes = append(emailRes, viewmodel.EmailTargetsVM{
+			Email: arrEmail[i],
+		})
+	}
+
+	dataActivity, err := model.ActivityOp.GetByJourneyCode(uc.DB, code)
+	if err != nil {
+		return viewmodel.JourneyPlanVM{}, err
+	}
+	// fmt.Println(dataActivity)
+
+	activityRes := []viewmodel.ActivityVM{}
+	for _, a := range dataActivity {
+		tempRes := viewmodel.ActivityVM{
+			UserID:   a.UserID,
+			Username: a.Username,
+			Datetime: a.Datetime.String,
+		}
+		activityRes = append(activityRes, tempRes)
+		// fmt.Println(activityRes)
+	}
+
 	res := viewmodel.JourneyPlanVM{
-		ID:              data.ID,
-		Code:            data.Code,
-		JourneyName:     data.JourneyName,
-		JourneySchedule: data.JourneySchedule,
-		AssignedAuditor: assignedAuditorRes,
-		Sites:           sitesRes,
-		Questionnaires:  questionnairesRes,
-		// Activity:        activityRes,
-		Signatures:    data.Signatures,
-		RequireSelfie: data.RequireSelfie,
-		CreatedAt:     data.CreatedAt.String,
-		UpdatedAt:     data.UpdatedAt.String,
+		ID:                    data.ID,
+		Code:                  data.Code,
+		JourneyName:           data.JourneyName,
+		JourneySchedule:       data.JourneySchedule,
+		AssignedAuditor:       assignedAuditorRes,
+		Sites:                 sitesRes,
+		EmailTargets:          emailRes,
+		Questionnaires:        questionnairesRes,
+		Activity:              activityRes,
+		Signatures:            data.Signatures,
+		RequireSelfie:         data.RequireSelfie,
+		Person:                data.Person,
+		CreatedAt:             data.CreatedAt.String,
+		UpdatedAt:             data.UpdatedAt.String,
+		IsDueToday:            true,
+		IsDraft:               false,
+		IsMakeUp:              false,
+		TodayCompletedCount:   0,
+		CompletedCount:        0,
+		TodayScheduleCount:    1,
+		IsCompletedToday:      false,
+		IsCompletedThisPeriod: false,
+		ScheduleCount:         7,
+		IsScheduleThisPeriod:  true,
 	}
 
 	return res, err

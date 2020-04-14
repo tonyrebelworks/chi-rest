@@ -32,7 +32,6 @@ func (h *Contract) GetAllJourney(w http.ResponseWriter, r *http.Request) {
 
 // GetDetailJourney ...
 func (h *Contract) GetDetailJourney(w http.ResponseWriter, r *http.Request) {
-
 	code := chi.URLParam(r, "code")
 	res, err := usecase.UC{h.App}.GetDetailJourney(code)
 	if err != nil {

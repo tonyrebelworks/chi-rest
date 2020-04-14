@@ -2,6 +2,7 @@ package model
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -9,21 +10,34 @@ import (
 
 // JourneyEntity ...
 type JourneyEntity struct {
-	ID              uint           `db:"id" json:"id"`
-	Code            string         `db:"code" json:"code"`
-	JourneyName     string         `db:"journey_name" json:"journeyName"`
-	JourneySchedule string         `db:"journey_schedule" json:"journeySchedule"`
-	Salesman        string         `db:"salesman" json:"assignedAuditor"`
-	Sites           string         `db:"sites" json:"sites"`
-	Questionnaires  string         `db:"questionnaires" json:"questionnaires"`
-	Signatures      string         `db:"signatures" json:"signatures"`
-	RequireSelfie   string         `db:"require_selfie" json:"requireSelfie"`
-	EmailTo         string         `db:"email_to" json:"emailTargets"`
-	StartJourney    sql.NullString `db:"start_journey" json:"startJourney"`
-	FinishJourney   sql.NullString `db:"finish_journey" json:"finishJourney"`
-	CreatedAt       sql.NullString `db:"created_at" json:"createdAt"`
-	UpdatedAt       sql.NullString `db:"updated_at" json:"updatedAt"`
-	DeletedAt       sql.NullString `db:"deleted_at" json:"deletedAt"`
+	ID                    uint           `db:"id" json:"id"`
+	Code                  string         `db:"code" json:"code"`
+	JourneyName           string         `db:"journey_name" json:"journeyName"`
+	JourneySchedule       string         `db:"journey_schedule" json:"journeySchedule"`
+	Salesman              string         `db:"salesman" json:"assignedAuditor"`
+	Sites                 string         `db:"sites" json:"sites"`
+	Questionnaires        string         `db:"questionnaires" json:"questionnaires"`
+	Signatures            string         `db:"signatures" json:"signatures"`
+	RequireSelfie         bool           `db:"require_selfie" json:"requireSelfie"`
+	Person                string         `db:"person" json:"person"`
+	EmailTo               string         `db:"email_to" json:"emailTargets"`
+	StartJourney          sql.NullString `db:"start_journey" json:"startJourney"`
+	FinishJourney         sql.NullString `db:"finish_journey" json:"finishJourney"`
+	IsDueToday            sql.NullString `db:"is_due_today" json:"isDueToday"`
+	IsDraft               sql.NullString `db:"is_draft" json:"isDraft"`
+	IsMakeUp              sql.NullString `db:"is_makeup" json:"isMakeUp"`
+	TodayCompletedCount   sql.NullString `db:"today_completed_count" json:"todayCompletedCount"`
+	CompletedCount        sql.NullString `db:"completed_count" json:"completedCount"`
+	TodayScheduleCount    sql.NullString `db:"today_schedule_count" json:"todayScheduleCount"`
+	IsCompletedToday      sql.NullString `db:"is_completed_today" json:"isCompletedToday"`
+	IsCompletedThisPeriod sql.NullString `db:"is_completed_this_period" json:"isCompletedThisPeriod"`
+	ScheduleCount         sql.NullString `db:"schedule_count" json:"scheduleCount"`
+	IsScheduleThisPeriod  sql.NullString `db:"is_schedule_this_period" json:"isScheduleThisPeriod"`
+	CreatedAt             sql.NullString `db:"created_at" json:"createdAt"`
+	CreatedBy             sql.NullString `db:"created_by" json:"createdBy"`
+	UpdatedAt             sql.NullString `db:"updated_at" json:"updatedAt"`
+	UpdatedBy             sql.NullString `db:"updated_by" json:"updatedBy"`
+	DeletedAt             sql.NullString `db:"deleted_at" json:"deletedAt"`
 }
 
 type journeyOp struct{}
@@ -39,7 +53,7 @@ func (op *journeyOp) GetAll(db *sqlx.DB) ([]JourneyEntity, error) {
 
 	res := []JourneyEntity{}
 
-	err := db.Select(&res, "SELECT id, code, journey_name, journey_schedule, salesman, sites, questionnaires, signatures, require_selfie, email_to, start_journey, finish_journey, created_at, updated_at FROM journey_plan "+activeQ+limitQ)
+	err := db.Select(&res, "SELECT id, code, journey_name, journey_schedule, salesman, sites, questionnaires, signatures, require_selfie, person, email_to, start_journey, finish_journey, created_at, updated_at FROM journey_plan "+activeQ+limitQ)
 
 	// fmt.Println(err)
 	return res, err
@@ -51,7 +65,7 @@ func (op *journeyOp) GetDetail(db *sqlx.DB, code string) (JourneyEntity, error) 
 
 	res := JourneyEntity{}
 	err = db.Get(&res, "SELECT * FROM journey_plan WHERE code = ? LIMIT 1", code)
-
+	fmt.Println(err)
 	return res, err
 }
 
