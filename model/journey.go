@@ -16,7 +16,6 @@ type JourneyEntity struct {
 	Salesman        string         `db:"salesman" json:"assignedAuditor"`
 	Sites           string         `db:"sites" json:"sites"`
 	Questionnaires  string         `db:"questionnaires" json:"questionnaires"`
-	Activity        string         `db:"activity" json:"activity"`
 	Signatures      string         `db:"signatures" json:"signatures"`
 	RequireSelfie   string         `db:"require_selfie" json:"requireSelfie"`
 	EmailTo         string         `db:"email_to" json:"emailTargets"`
@@ -25,13 +24,7 @@ type JourneyEntity struct {
 	CreatedAt       sql.NullString `db:"created_at" json:"createdAt"`
 	UpdatedAt       sql.NullString `db:"updated_at" json:"updatedAt"`
 	DeletedAt       sql.NullString `db:"deleted_at" json:"deletedAt"`
-	// AssignedAuditor []SalesmanEntity `json:"assignedAuditor2"`
 }
-
-// SalesmanEntity ...
-// type SalesmanEntity struct {
-// 	UserID string `json:"userID"`
-// }
 
 type journeyOp struct{}
 
@@ -45,9 +38,10 @@ func (op *journeyOp) GetAll(db *sqlx.DB) ([]JourneyEntity, error) {
 	limitQ := "LIMIT 10"
 
 	res := []JourneyEntity{}
-	err := db.Select(&res, "SELECT id, code, journey_name, journey_schedule, salesman, sites, questionnaires, signatures, require_selfie, email_to, activity, start_journey, finish_journey, created_at, updated_at FROM journey_plan "+activeQ+limitQ)
 
-	// fmt.Println(res)
+	err := db.Select(&res, "SELECT id, code, journey_name, journey_schedule, salesman, sites, questionnaires, signatures, require_selfie, email_to, start_journey, finish_journey, created_at, updated_at FROM journey_plan "+activeQ+limitQ)
+
+	// fmt.Println(err)
 	return res, err
 }
 

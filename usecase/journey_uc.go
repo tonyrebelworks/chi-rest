@@ -17,6 +17,10 @@ func (uc UC) GetAllJourney() ([]map[string]interface{}, error) {
 	// fmt.Println(data)
 	resMap := make([]map[string]interface{}, 0)
 	for _, a := range data {
+		dataActivity, err := model.ActivityOp.GetByJourneyCode(uc.DB, a.Code)
+		if err != nil {
+			return nil, err
+		}
 
 		sitesRes := make([]map[string]interface{}, 0)
 		site := a.Sites
@@ -54,12 +58,23 @@ func (uc UC) GetAllJourney() ([]map[string]interface{}, error) {
 			})
 		}
 
+		activityRes := []viewmodel.ActivityVM{}
+		for _, a := range dataActivity {
+			tempRes := viewmodel.ActivityVM{
+				UserID:   a.UserID,
+				Username: a.Username,
+				Datetime: a.Datetime.String,
+			}
+			// fmt.Println(a)
+			activityRes = append(activityRes, tempRes)
+		}
+
 		resMap = append(resMap, map[string]interface{}{
 			"id":              a.ID,
 			"code":            a.Code,
 			"journeyName":     a.JourneyName,
 			"journeySchedule": a.JourneySchedule,
-			"activity":        a.Activity,
+			"activity":        activityRes,
 			"signatures":      a.Signatures,
 			"requireSelfie":   a.RequireSelfie,
 			"startJourney":    a.StartJourney.String,
@@ -68,7 +83,7 @@ func (uc UC) GetAllJourney() ([]map[string]interface{}, error) {
 			"updatedAt":       a.UpdatedAt.String,
 			"sites":           sitesRes,
 			"questionnaires":  questionnairesRes,
-			"emailTo":         emailRes,
+			"emailTargets":    emailRes,
 			"assignedAuditor": assignedAuditorRes,
 		})
 	}
@@ -118,11 +133,11 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 		AssignedAuditor: assignedAuditorRes,
 		Sites:           sitesRes,
 		Questionnaires:  questionnairesRes,
-		Activity:        data.Activity,
-		Signatures:      data.Signatures,
-		RequireSelfie:   data.RequireSelfie,
-		CreatedAt:       data.CreatedAt.String,
-		UpdatedAt:       data.UpdatedAt.String,
+		// Activity:        activityRes,
+		Signatures:    data.Signatures,
+		RequireSelfie: data.RequireSelfie,
+		CreatedAt:     data.CreatedAt.String,
+		UpdatedAt:     data.UpdatedAt.String,
 	}
 
 	return res, err
