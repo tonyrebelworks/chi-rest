@@ -191,6 +191,6 @@ func (op *journeyOp) UpdateTimeJourney(
 	}
 	sql := "UPDATE journey_plan SET updated_at = ? WHERE code = ? "
 
-	_, err := db.Exec(sql, startTime, updatedAt, code)
+	_, err := db.Exec(sql, updatedAt, code)
 	return r, err
 }
