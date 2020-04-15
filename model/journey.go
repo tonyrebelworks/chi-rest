@@ -149,12 +149,48 @@ func (op *journeyOp) Update(
 }
 
 // DeleteJourney ...
-func (op *journeyOp) DeleteJourney(db *sqlx.DB, code string, changedAt time.Time) ([]*JourneyEntity, error) {
+func (op *journeyOp) DeleteJourney(
+	db *sqlx.DB,
+	code string,
+	changedAt time.Time,
+
+) ([]*JourneyEntity, error) {
+
 	deletedAt := changedAt.Format("2006-01-02 15:04:05")
 
 	r := []*JourneyEntity{}
 	sql := "UPDATE journey_plan SET deleted_at = ? WHERE code = ? "
 
 	_, err := db.Exec(sql, deletedAt, code)
+	return r, err
+}
+
+// UpdateTimeJourney ...
+func (op *journeyOp) UpdateTimeJourney(
+	db *sqlx.DB,
+	code string,
+	startTime string,
+	endTime string,
+	changedAt time.Time,
+) ([]*JourneyEntity, error) {
+
+	updatedAt := changedAt.Format("2006-01-02 15:04:05")
+	r := []*JourneyEntity{}
+
+	if startTime != "" {
+		sql := "UPDATE journey_plan SET start_journey = ?, updated_at = ? WHERE code = ? "
+
+		_, err := db.Exec(sql, startTime, updatedAt, code)
+		return r, err
+	}
+	if endTime != "" {
+		sql := "UPDATE journey_plan SET finish_journey = ?, updated_at = ? WHERE code = ? "
+
+		_, err := db.Exec(sql, endTime, updatedAt, code)
+		return r, err
+	}
+	sql := "UPDATE journey_plan SET updated_at = ? WHERE code = ? "
+
+	_, err := db.Exec(sql, startTime, updatedAt, code)
 	return r, err
 }

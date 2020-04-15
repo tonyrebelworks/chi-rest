@@ -27,5 +27,7 @@ func RegisterRoutes(r *chi.Mux, app *bootstrap.App) {
 		r.Put("/journey/{code}", h.UpdateJourney)
 		r.Delete("/journey/{code}", h.DeleteJourney)
 
+		r.Put("/journey/time", h.UpdateTimeJourney)
+
 	})
 }

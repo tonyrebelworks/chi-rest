@@ -53,3 +53,10 @@ type Questionnaires struct {
 type EmailTo struct {
 	Email string `json:"email" `
 }
+
+// UpdateTimeJourneyRequest ...
+type UpdateTimeJourneyRequest struct {
+	JourneyID string `json:"journeyID" validate:"required"`
+	StartTime string `json:"startTime"`
+	EndTime   string `json:"endTime"`
+}

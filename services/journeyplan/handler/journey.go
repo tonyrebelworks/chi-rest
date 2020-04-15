@@ -189,3 +189,32 @@ func (h *Contract) DeleteJourney(w http.ResponseWriter, r *http.Request) {
 	h.SendSuccess(w, res, nil)
 	return
 }
+
+// UpdateTimeJourney ...
+func (h *Contract) UpdateTimeJourney(w http.ResponseWriter, r *http.Request) {
+	var err error
+
+	req := request.UpdateTimeJourneyRequest{}
+	if err = h.Bind(r, &req); err != nil {
+		h.SendBadRequest(w, err.Error())
+		return
+	}
+
+	JourneyID := req.JourneyID
+	StartTime := req.StartTime
+	EndTime := req.EndTime
+
+	mdl := usecase.UC{h.App}
+
+	_, err = mdl.UpdateTimeJourney(
+		JourneyID,
+		StartTime,
+		EndTime)
+	if err != nil {
+		h.SendBadRequest(w, err.Error())
+		return
+	}
+
+	h.SendSuccess(w, map[string]interface{}{}, nil)
+	return
+}

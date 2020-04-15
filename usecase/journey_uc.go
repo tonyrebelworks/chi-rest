@@ -234,3 +234,14 @@ func (uc UC) DeleteJourney(code string) ([]*model.JourneyEntity, error) {
 	dt, err := model.JourneyOp.DeleteJourney(uc.DB, code, time.Now().UTC())
 	return dt, err
 }
+
+// UpdateTimeJourney ...
+func (uc UC) UpdateTimeJourney(
+	JourneyID string,
+	StartTime string,
+	EndTime string,
+) ([]*model.JourneyEntity, error) {
+
+	dt, err := model.JourneyOp.UpdateTimeJourney(uc.DB, JourneyID, StartTime, EndTime, time.Now().UTC())
+	return dt, err
+}
