@@ -20,14 +20,19 @@ func RegisterRoutes(r *chi.Mux, app *bootstrap.App) {
 	r.Route("/v1", func(r chi.Router) {
 		// r.Get("/", h.Hello)
 
-		//Journey
+		//Journey CMS
 		r.Get("/journey", h.GetAllJourney)
 		r.Get("/journey/{code}", h.GetDetailJourney)
 		r.Post("/journey", h.AddJourney)
 		r.Put("/journey/{code}", h.UpdateJourney)
 		r.Delete("/journey/{code}", h.DeleteJourney)
+		r.Get("/journey/report/{code}", h.GetReportJourney)
 
+		//Journey Mobile
+		r.Get("/journeymobile", h.GetAllJourneyMobile)
+		r.Get("/journeymobile/{code}", h.GetDetailJourneyMobile)
 		r.Put("/journey/time", h.UpdateTimeJourney)
+		r.Post("/journey/trackingtime", h.AddTrackingTimeJourney)
 
 	})
 }

@@ -60,3 +60,10 @@ type UpdateTimeJourneyRequest struct {
 	StartTime string `json:"startTime"`
 	EndTime   string `json:"endTime"`
 }
+
+// AddTrackingTimeJourneyRequest ...
+type AddTrackingTimeJourneyRequest struct {
+	JourneyID string `json:"journeyID" validate:"required"`
+	Latitude  string `json:"latitude" validate:"required"`
+	Longitude string `json:"longitude" validate:"required"`
+}

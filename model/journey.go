@@ -13,7 +13,7 @@ type JourneyEntity struct {
 	ID              uint   `db:"id" json:"id"`
 	Code            string `db:"code" json:"code"`
 	JourneyName     string `db:"journey_name" json:"journeyName"`
-	JourneySchedule string `db:"journey_schedule" json:"journeySchedule"`
+	JourneySchedule int    `db:"journey_schedule" json:"journeySchedule"`
 	Salesman        string `db:"salesman" json:"assignedAuditor"`
 	// Salesman              []SalesmanEntity `db:"salesman" json:"assignedAuditor"`
 	Sites                 string         `db:"sites" json:"sites"`
@@ -22,8 +22,8 @@ type JourneyEntity struct {
 	RequireSelfie         bool           `db:"require_selfie" json:"requireSelfie"`
 	Person                sql.NullString `db:"person" json:"person"`
 	EmailTo               string         `db:"email_to" json:"emailTargets"`
-	StartJourney          sql.NullString `db:"start_journey" json:"startJourney"`
-	FinishJourney         sql.NullString `db:"finish_journey" json:"finishJourney"`
+	StartJourney          sql.NullString `db:"start_journey" json:"startTime"`
+	FinishJourney         sql.NullString `db:"finish_journey" json:"endTime"`
 	IsDueToday            sql.NullString `db:"is_due_today" json:"isDueToday"`
 	IsDraft               sql.NullString `db:"is_draft" json:"isDraft"`
 	IsMakeUp              sql.NullString `db:"is_makeup" json:"isMakeUp"`

@@ -203,7 +203,9 @@ func (h *Contract) UpdateTimeJourney(w http.ResponseWriter, r *http.Request) {
 	JourneyID := req.JourneyID
 	StartTime := req.StartTime
 	EndTime := req.EndTime
-
+	fmt.Println(JourneyID)
+	fmt.Println(StartTime)
+	fmt.Println(EndTime)
 	mdl := usecase.UC{h.App}
 
 	_, err = mdl.UpdateTimeJourney(
@@ -216,5 +218,75 @@ func (h *Contract) UpdateTimeJourney(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.SendSuccess(w, map[string]interface{}{}, nil)
+	return
+}
+
+// GetDetailJourneyMobile ...
+func (h *Contract) GetDetailJourneyMobile(w http.ResponseWriter, r *http.Request) {
+	code := chi.URLParam(r, "code")
+	res, err := usecase.UC{h.App}.GetDetailJourneyMobile(code)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	h.SendSuccess(w, res, nil)
+	return
+}
+
+// GetReportJourney ...
+func (h *Contract) GetReportJourney(w http.ResponseWriter, r *http.Request) {
+	code := chi.URLParam(r, "code")
+	res, err := usecase.UC{h.App}.GetReportJourney(code)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	h.SendSuccess(w, res, nil)
+	return
+}
+
+// AddTrackingTimeJourney ...
+func (h *Contract) AddTrackingTimeJourney(w http.ResponseWriter, r *http.Request) {
+	var err error
+	req := request.AddTrackingTimeJourneyRequest{}
+
+	if err = h.Bind(r, &req); err != nil {
+		h.SendBadRequest(w, err.Error())
+		return
+	}
+	// if err = h.Validate.Struct(req); err != nil {
+	// 	h.SendRequestValidationError(w, err.(validator.ValidationErrors))
+	// 	return
+	// }
+
+	JourneyID := req.JourneyID
+	Latitude := req.Latitude
+	Longitude := req.Longitude
+	UserCode := "5qFKQb4kNJVFGsDBTp1NVrKojn12"
+
+	lastID, err := usecase.UC{h.App}.AddTrackingTimeJourney(
+		JourneyID,
+		UserCode,
+		Latitude,
+		Longitude,
+	)
+	if err != nil {
+		h.SendBadRequest(w, err.Error())
+		return
+	}
+
+	h.SendSuccess(w, map[string]interface{}{}, lastID)
+	return
+}
+
+func (h *Contract) GetAllJourneyMobile(w http.ResponseWriter, r *http.Request) {
+	res, err := usecase.UC{h.App}.GetAllJourneyMobile()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	h.SendSuccess(w, res, nil)
 	return
 }
