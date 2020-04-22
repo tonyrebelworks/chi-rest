@@ -102,6 +102,8 @@ type ReportJourneyPlanVM struct {
 	Questionnaires  []QuestionnairesVM  ` json:"questionnaires"`
 	// EmailTargets    []EmailTargetsVM    ` json:"emailTargets"`
 	// Activity        []ActivityVM        ` json:"activity"`
+	// Reports         []ReportsVM         ` json:"reports"`
+	Reports         []ReportsVM         ` json:"reports"`
 	TrackingTimeGPS []TrackingTimeGPSVM ` json:"trackingTimeGPS"`
 	Signatures      string              ` json:"signatures"`
 	StartJourney    string              ` json:"startJourney"`
@@ -134,4 +136,9 @@ type GetAllJourneyPlanMobileVM struct {
 	// IsCompletedThisPeriod bool   ` json:"isCompletedThisPeriod"`
 	// ScheduleCount         int    ` json:"scheduleCount"`
 	// IsScheduleThisPeriod  bool   ` json:"isScheduleThisPeriod"`
+}
+
+// ReportsVM ...
+type ReportsVM struct {
+	URL string `json:"url"`
 }

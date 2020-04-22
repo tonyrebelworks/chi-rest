@@ -363,6 +363,29 @@ func (uc UC) GetReportJourney(code string) (viewmodel.ReportJourneyPlanVM, error
 		})
 	}
 
+	dataRep, err := model.ReportFirebaseOp.GetByJourneyCode(uc.DB, code)
+	if err != nil {
+		return viewmodel.ReportJourneyPlanVM{}, err
+	}
+
+	reportsRes := []viewmodel.ReportsVM{}
+	for _, a := range dataRep {
+		tempRes := viewmodel.ReportsVM{
+			URL: a.URL,
+		}
+		reportsRes = append(reportsRes, tempRes)
+
+	}
+
+	// reportsRes := make([]viewmodel.ReportsVM, 0)
+	// report := data.Reports
+	// arrReports := strings.Split(report, "|")
+	// for i := range arrReports {
+	// 	sitesRes = append(reportsRes, viewmodel.ReportsVM{
+	// 		URL: arrReports[i],
+	// 	})
+	// }
+
 	assignedAuditorRes := make([]viewmodel.AssignedAuditorVM, 0)
 	assignAud := data.Salesman
 	arrAssignAud := strings.Split(assignAud, "|")
@@ -406,6 +429,7 @@ func (uc UC) GetReportJourney(code string) (viewmodel.ReportJourneyPlanVM, error
 		AssignedAuditor: assignedAuditorRes,
 		Sites:           sitesRes,
 		Questionnaires:  questionnairesRes,
+		Reports:         reportsRes,
 		Signatures:      data.Signatures,
 		StartJourney:    data.StartJourney.String,
 		FinishJourney:   data.FinishJourney.String,
