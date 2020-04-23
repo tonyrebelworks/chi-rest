@@ -91,9 +91,9 @@ func (h Contract) SendRequestValidationError(w http.ResponseWriter, validationEr
 func (h Contract) RespondWithJSON(w http.ResponseWriter, httpCode int, statCode string, message string, payload interface{}, pagination interface{}) {
 	respPayload := map[string]interface{}{
 		// "stat_code":  statCode,
-		"message": message,
-		// "pagination": pagination,
-		"data": payload,
+		"message":    message,
+		"data":       payload,
+		"pagination": pagination,
 		// "type": "JSON",
 	}
 

@@ -8,17 +8,31 @@ import (
 )
 
 // GetAllJourney ...
-func (uc UC) GetAllJourney() ([]map[string]interface{}, error) {
-	data, err := model.JourneyOp.GetAll(uc.DB)
+func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interface{}, viewmodel.SimplePaginationVM, error) {
+	var (
+		pagination viewmodel.SimplePaginationVM
+	)
+
+	data, err := model.JourneyOp.GetAll(uc.DB, types, maxID, limit)
+	// types = "prev"
+
+	if len(data) > 0 {
+		firstRecord := data[0]
+		firstID := int(firstRecord.ID)
+		lastRecord := data[len(data)-1]
+		lastID := int(lastRecord.ID)
+		pagination = SimplePaginationRes(types, maxID, firstID, lastID, limit)
+	}
+
 	if err != nil {
-		return nil, err
+		return nil, pagination, err
 	}
 
 	resMap := make([]map[string]interface{}, 0)
 	for _, a := range data {
 		dataActivity, err := model.ActivityOp.GetByJourneyCode(uc.DB, a.Code)
 		if err != nil {
-			return nil, err
+			return nil, pagination, err
 		}
 
 		sitesRes := make([]map[string]interface{}, 0)
@@ -99,7 +113,7 @@ func (uc UC) GetAllJourney() ([]map[string]interface{}, error) {
 		})
 	}
 
-	return resMap, err
+	return resMap, pagination, err
 }
 
 // GetDetailJourney ...
@@ -453,35 +467,46 @@ func (uc UC) AddTrackingTimeJourney(
 	return dt, err
 }
 
-// GetAllJourneyMobile ...
-func (uc UC) GetAllJourneyMobile() ([]viewmodel.GetAllJourneyPlanMobileVM, error) {
-	data, err := model.JourneyOp.GetAll(uc.DB)
-	if err != nil {
-		return nil, err
-	}
+// // GetAllJourneyMobile ...
+// func (uc UC) GetAllJourneyMobile() ([]viewmodel.GetAllJourneyPlanMobileVM, error) {
+// 	data, err := model.JourneyOp.GetAll(uc.DB)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	resMap := make([]viewmodel.GetAllJourneyPlanMobileVM, 0)
-	for _, a := range data {
+// 	resMap := make([]viewmodel.GetAllJourneyPlanMobileVM, 0)
+// 	for _, a := range data {
 
-		resMap = append(resMap, viewmodel.GetAllJourneyPlanMobileVM{
-			Code:     a.Code,
-			Name:     a.JourneyName,
-			Schedule: a.JourneySchedule,
-			Type:     "basic",
-			Priority: true,
-			Language: "en",
-			// IsDueToday:            true,
-			// IsDraft:               false,
-			// IsMakeUp:              false,
-			TodayCompletedCount: 0,
-			CompletedCount:      0,
-			// TodayScheduleCount:    1,
-			// IsCompletedToday:      false,
-			// IsCompletedThisPeriod: false,
-			// ScheduleCount:         7,
-			// IsScheduleThisPeriod:  true,
-		})
-	}
+// 		resMap = append(resMap, viewmodel.GetAllJourneyPlanMobileVM{
+// 			Code:     a.Code,
+// 			Name:     a.JourneyName,
+// 			Schedule: a.JourneySchedule,
+// 			Type:     "basic",
+// 			Priority: true,
+// 			Language: "en",
+// 			// IsDueToday:            true,
+// 			// IsDraft:               false,
+// 			// IsMakeUp:              false,
+// 			TodayCompletedCount: 0,
+// 			CompletedCount:      0,
+// 			// TodayScheduleCount:    1,
+// 			// IsCompletedToday:      false,
+// 			// IsCompletedThisPeriod: false,
+// 			// ScheduleCount:         7,
+// 			// IsScheduleThisPeriod:  true,
+// 		})
+// 	}
 
-	return resMap, err
+// 	return resMap, err
+// }
+
+// AddURLFirebase ...
+func (uc UC) AddURLFirebase(
+	url string,
+	journeyID string,
+
+) (int64, error) {
+
+	dt, err := model.ReportFirebaseOp.Store(uc.DB, url, journeyID, time.Now().UTC())
+	return dt, err
 }

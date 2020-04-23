@@ -67,3 +67,9 @@ type AddTrackingTimeJourneyRequest struct {
 	Latitude  string `json:"latitude" validate:"required"`
 	Longitude string `json:"longitude" validate:"required"`
 }
+
+// AddURLFirebaseRequest ...
+type AddURLFirebaseRequest struct {
+	JourneyID string `json:"journeyID" validate:"required"`
+	URL       string `json:"url" validate:"required"`
+}

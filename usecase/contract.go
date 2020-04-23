@@ -1,9 +1,11 @@
 package usecase
 
 import (
+	"strconv"
 	"time"
 
 	"chi-rest/bootstrap"
+	"chi-rest/usecase/viewmodel"
 
 	"github.com/andboson/carbon"
 )
@@ -22,4 +24,24 @@ func today() time.Time {
 	cb.SetTZ("UTC")
 
 	return cb.Time
+}
+
+// SimplePaginationRes ...
+func SimplePaginationRes(types string, maxID, firstID, lastID, limit int) viewmodel.SimplePaginationVM {
+	var (
+		prevPage string
+		nextPage string
+	)
+
+	if maxID != 0 {
+		prevPage = "?types=prev&max_id=" + strconv.Itoa(firstID) + "&limit=" + strconv.Itoa(limit)
+	}
+	nextPage = "?types=next&max_id=" + strconv.Itoa(lastID) + "&limit=" + strconv.Itoa(limit)
+
+	pagination := viewmodel.SimplePaginationVM{
+		PrevPage: prevPage,
+		NextPage: nextPage,
+	}
+
+	return pagination
 }

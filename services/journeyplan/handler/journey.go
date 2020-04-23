@@ -5,6 +5,7 @@ import (
 	"chi-rest/usecase"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi"
 	"github.com/rs/xid"
@@ -20,12 +21,36 @@ import (
 // @Success 200 {string} string	MsgSuccess
 // @Router / [get]
 func (h *Contract) GetAllJourney(w http.ResponseWriter, r *http.Request) {
-	res, err := usecase.UC{h.App}.GetAllJourney()
+	var (
+		types string
+		maxID int
+		limit int
+		err   error
+	)
+
+	types = r.URL.Query().Get("types")
+	if types != "prev" && types != "next" {
+		h.SendBadRequest(w, "Invalid type value")
+		return
+	}
+	maxID, err = strconv.Atoi(r.URL.Query().Get("max_id"))
+	if err != nil {
+		h.SendBadRequest(w, "Invalid last id value")
+		return
+	}
+	limit, err = strconv.Atoi(r.URL.Query().Get("limit"))
+	if err != nil {
+		h.SendBadRequest(w, "Invalid limit value")
+		return
+	}
+
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	h.SendSuccess(w, res, nil)
+	res, pagination, err := usecase.UC{h.App}.GetAllJourney(types, maxID, limit)
+
+	h.SendSuccess(w, res, pagination)
 	return
 }
 
@@ -281,12 +306,42 @@ func (h *Contract) AddTrackingTimeJourney(w http.ResponseWriter, r *http.Request
 	return
 }
 
-func (h *Contract) GetAllJourneyMobile(w http.ResponseWriter, r *http.Request) {
-	res, err := usecase.UC{h.App}.GetAllJourneyMobile()
-	if err != nil {
-		fmt.Println(err)
+// func (h *Contract) GetAllJourneyMobile(w http.ResponseWriter, r *http.Request) {
+// 	res, err := usecase.UC{h.App}.GetAllJourneyMobile()
+// 	if err != nil {
+// 		fmt.Println(err)
+// 		return
+// 	}
+// 	h.SendSuccess(w, res, nil)
+// 	return
+// }
+
+// AddURLFirebase ...
+func (h *Contract) AddURLFirebase(w http.ResponseWriter, r *http.Request) {
+	var err error
+	req := request.AddURLFirebaseRequest{}
+
+	if err = h.Bind(r, &req); err != nil {
+		h.SendBadRequest(w, err.Error())
 		return
 	}
-	h.SendSuccess(w, res, nil)
+	// if err = h.Validate.Struct(req); err != nil {
+	// 	h.SendRequestValidationError(w, err.(validator.ValidationErrors))
+	// 	return
+	// }
+
+	URL := req.URL
+	JourneyID := req.JourneyID
+
+	lastID, err := usecase.UC{h.App}.AddURLFirebase(
+		URL,
+		JourneyID,
+	)
+	if err != nil {
+		h.SendBadRequest(w, err.Error())
+		return
+	}
+
+	h.SendSuccess(w, map[string]interface{}{}, lastID)
 	return
 }
