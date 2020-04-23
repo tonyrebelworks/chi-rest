@@ -29,7 +29,7 @@ func RegisterRoutes(r *chi.Mux, app *bootstrap.App) {
 		r.Get("/journey/report/{code}", h.GetReportJourney)
 
 		//Journey Mobile
-		// r.Get("/journeymobile", h.GetAllJourneyMobile)
+		r.Get("/journeymobile", h.GetAllJourneyMobile)
 		r.Get("/journeymobile/{code}", h.GetDetailJourneyMobile)
 		r.Put("/journey/time", h.UpdateTimeJourney)
 		r.Post("/journey/trackingtime", h.AddTrackingTimeJourney)

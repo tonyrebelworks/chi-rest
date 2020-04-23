@@ -53,35 +53,29 @@ func (op *journeyOp) GetAll(db *sqlx.DB, types string, maxID, limit int) ([]Jour
 	)
 
 	res := []JourneyEntity{}
-	// fmt.Println(maxID)
-	// fmt.Println(limit)
 
 	if types == "next" {
 		// maxID = 0 detect page 1
 		if maxID == 0 {
 			sql := "SELECT id, code, journey_name, journey_schedule, salesman, sites, questionnaires, signatures, require_selfie, person, email_to, start_journey, finish_journey, created_at, updated_at FROM journey_plan ORDER BY id DESC LIMIT ?"
 			err = db.Select(&res, sql, limit)
-			// fmt.Println(sql)
+
 		} else {
 			sql := "SELECT id, code, journey_name, journey_schedule, salesman, sites, questionnaires, signatures, require_selfie, person, email_to, start_journey, finish_journey, created_at, updated_at FROM journey_plan WHERE id > ? ORDER BY id DESC LIMIT ?"
 			err = db.Select(&res, sql, maxID, limit)
-			// fmt.Println(sql)
 
 		}
 	} else {
 		sql := "SELECT id, code, journey_name, journey_schedule, salesman, sites, questionnaires, signatures, require_selfie, person, email_to, start_journey, finish_journey, created_at, updated_at FROM journey_plan WHERE id > ? ORDER BY id DESC LIMIT ?"
 		err = db.Select(&res, sql, maxID, limit)
-		// fmt.Println(sql)
 
 	}
-	// fmt.Println("masuk sini")
 
 	// activeQ := "WHERE deleted_at IS NULL "
 	// limitQ := "LIMIT 2"
 
 	// err := db.Select(&res, "SELECT id, code, journey_name, journey_schedule, salesman, sites, questionnaires, signatures, require_selfie, person, email_to, start_journey, finish_journey, created_at, updated_at FROM journey_plan "+activeQ+limitQ)
 
-	// fmt.Println(err)
 	return res, err
 }
 

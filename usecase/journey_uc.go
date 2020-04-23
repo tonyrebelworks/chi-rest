@@ -14,7 +14,6 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 	)
 
 	data, err := model.JourneyOp.GetAll(uc.DB, types, maxID, limit)
-	// types = "prev"
 
 	if len(data) > 0 {
 		firstRecord := data[0]
@@ -467,38 +466,38 @@ func (uc UC) AddTrackingTimeJourney(
 	return dt, err
 }
 
-// // GetAllJourneyMobile ...
-// func (uc UC) GetAllJourneyMobile() ([]viewmodel.GetAllJourneyPlanMobileVM, error) {
-// 	data, err := model.JourneyOp.GetAll(uc.DB)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+// GetAllJourneyMobile ...
+func (uc UC) GetAllJourneyMobile() ([]viewmodel.GetAllJourneyPlanMobileVM, error) {
+	data, err := model.JourneyOp.GetAll(uc.DB, "next", 0, 10000)
+	if err != nil {
+		return nil, err
+	}
 
-// 	resMap := make([]viewmodel.GetAllJourneyPlanMobileVM, 0)
-// 	for _, a := range data {
+	resMap := make([]viewmodel.GetAllJourneyPlanMobileVM, 0)
+	for _, a := range data {
 
-// 		resMap = append(resMap, viewmodel.GetAllJourneyPlanMobileVM{
-// 			Code:     a.Code,
-// 			Name:     a.JourneyName,
-// 			Schedule: a.JourneySchedule,
-// 			Type:     "basic",
-// 			Priority: true,
-// 			Language: "en",
-// 			// IsDueToday:            true,
-// 			// IsDraft:               false,
-// 			// IsMakeUp:              false,
-// 			TodayCompletedCount: 0,
-// 			CompletedCount:      0,
-// 			// TodayScheduleCount:    1,
-// 			// IsCompletedToday:      false,
-// 			// IsCompletedThisPeriod: false,
-// 			// ScheduleCount:         7,
-// 			// IsScheduleThisPeriod:  true,
-// 		})
-// 	}
+		resMap = append(resMap, viewmodel.GetAllJourneyPlanMobileVM{
+			Code:     a.Code,
+			Name:     a.JourneyName,
+			Schedule: a.JourneySchedule,
+			Type:     "basic",
+			Priority: true,
+			Language: "en",
+			// IsDueToday:            true,
+			// IsDraft:               false,
+			// IsMakeUp:              false,
+			TodayCompletedCount: 0,
+			CompletedCount:      0,
+			// TodayScheduleCount:    1,
+			// IsCompletedToday:      false,
+			// IsCompletedThisPeriod: false,
+			// ScheduleCount:         7,
+			// IsScheduleThisPeriod:  true,
+		})
+	}
 
-// 	return resMap, err
-// }
+	return resMap, err
+}
 
 // AddURLFirebase ...
 func (uc UC) AddURLFirebase(

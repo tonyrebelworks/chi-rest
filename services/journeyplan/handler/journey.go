@@ -5,7 +5,6 @@ import (
 	"chi-rest/usecase"
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/go-chi/chi"
 	"github.com/rs/xid"
@@ -28,21 +27,25 @@ func (h *Contract) GetAllJourney(w http.ResponseWriter, r *http.Request) {
 		err   error
 	)
 
-	types = r.URL.Query().Get("types")
-	if types != "prev" && types != "next" {
-		h.SendBadRequest(w, "Invalid type value")
-		return
-	}
-	maxID, err = strconv.Atoi(r.URL.Query().Get("max_id"))
-	if err != nil {
-		h.SendBadRequest(w, "Invalid last id value")
-		return
-	}
-	limit, err = strconv.Atoi(r.URL.Query().Get("limit"))
-	if err != nil {
-		h.SendBadRequest(w, "Invalid limit value")
-		return
-	}
+	types = "next"
+	maxID = 0
+	limit = 10000
+
+	// types = r.URL.Query().Get("types")
+	// if types != "prev" && types != "next" {
+	// 	h.SendBadRequest(w, "Invalid type value")
+	// 	return
+	// }
+	// maxID, err = strconv.Atoi(r.URL.Query().Get("max_id"))
+	// if err != nil {
+	// 	h.SendBadRequest(w, "Invalid last id value")
+	// 	return
+	// }
+	// limit, err = strconv.Atoi(r.URL.Query().Get("limit"))
+	// if err != nil {
+	// 	h.SendBadRequest(w, "Invalid limit value")
+	// 	return
+	// }
 
 	if err != nil {
 		fmt.Println(err)
@@ -306,15 +309,15 @@ func (h *Contract) AddTrackingTimeJourney(w http.ResponseWriter, r *http.Request
 	return
 }
 
-// func (h *Contract) GetAllJourneyMobile(w http.ResponseWriter, r *http.Request) {
-// 	res, err := usecase.UC{h.App}.GetAllJourneyMobile()
-// 	if err != nil {
-// 		fmt.Println(err)
-// 		return
-// 	}
-// 	h.SendSuccess(w, res, nil)
-// 	return
-// }
+func (h *Contract) GetAllJourneyMobile(w http.ResponseWriter, r *http.Request) {
+	res, err := usecase.UC{h.App}.GetAllJourneyMobile()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	h.SendSuccess(w, res, nil)
+	return
+}
 
 // AddURLFirebase ...
 func (h *Contract) AddURLFirebase(w http.ResponseWriter, r *http.Request) {
