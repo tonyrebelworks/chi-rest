@@ -9,6 +9,9 @@ type AddJourneyRequest struct {
 	Questionnaires  []Questionnaires  `json:"questionnaires" validate:"required"`
 	Signatures      int64             `json:"signatures" validate:"required"`
 	RequireSelfie   int64             `json:"requireSelfie" validate:"required"`
+	DatesCustom     []DatesCustom     `json:"datesCustom" `
+	DaysOfWeek      []DaysOfWeek      `json:"daysOfWeek" `
+	DatesOfMonth    []DatesOfMonth    `json:"datesOfMonth"`
 	EmailTo         []EmailTo         `json:"emailTo" validate:"required"`
 	Person          string            `json:"person"`
 	StartJourney    string            `json:"startJourney"`
@@ -72,4 +75,19 @@ type AddTrackingTimeJourneyRequest struct {
 type AddURLFirebaseRequest struct {
 	JourneyID string `json:"journeyID" validate:"required"`
 	URL       string `json:"url" validate:"required"`
+}
+
+// DatesCustom ...
+type DatesCustom struct {
+	DatesCustom string `json:"dateCustom" `
+}
+
+// DaysOfWeek ...
+type DaysOfWeek struct {
+	DaysOfWeek string `json:"daysOfWeek" `
+}
+
+// DatesOfMonth ...
+type DatesOfMonth struct {
+	DateOfMonth string `json:"datesOfMonth" `
 }

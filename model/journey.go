@@ -10,11 +10,14 @@ import (
 
 // JourneyEntity ...
 type JourneyEntity struct {
-	ID              uint   `db:"id" json:"id"`
-	Code            string `db:"code" json:"code"`
-	JourneyName     string `db:"journey_name" json:"journeyName"`
-	JourneySchedule int    `db:"journey_schedule" json:"journeySchedule"`
-	Salesman        string `db:"salesman" json:"assignedAuditor"`
+	ID              uint           `db:"id" json:"id"`
+	Code            string         `db:"code" json:"code"`
+	JourneyName     string         `db:"journey_name" json:"journeyName"`
+	JourneySchedule int            `db:"journey_schedule" json:"journeySchedule"`
+	DatesCustom     sql.NullString `db:"dates_custom" json:"datesCustom"`
+	DaysOfWeek      sql.NullString `db:"days_of_week" json:"daysOfWeek"`
+	DatesOfMonth    sql.NullString `db:"dates_of_month" json:"datesOfMonth"`
+	Salesman        string         `db:"salesman" json:"assignedAuditor"`
 	// Salesman              []SalesmanEntity `db:"salesman" json:"assignedAuditor"`
 	Sites                 string         `db:"sites" json:"sites"`
 	Questionnaires        string         `db:"questionnaires" json:"questionnaires"`
@@ -54,19 +57,23 @@ func (op *journeyOp) GetAll(db *sqlx.DB, types string, maxID, limit int) ([]Jour
 
 	res := []JourneyEntity{}
 
+	native := "SELECT id, code, journey_name, journey_schedule, dates_custom, days_of_week, dates_of_month, salesman, sites, questionnaires, signatures, require_selfie, person, email_to, start_journey, finish_journey, created_at, updated_at FROM journey_plan "
+
 	if types == "next" {
 		// maxID = 0 detect page 1
 		if maxID == 0 {
-			sql := "SELECT id, code, journey_name, journey_schedule, salesman, sites, questionnaires, signatures, require_selfie, person, email_to, start_journey, finish_journey, created_at, updated_at FROM journey_plan ORDER BY id DESC LIMIT ?"
+			sql := native + " ORDER BY id DESC LIMIT ?"
+			// fmt.Println(sql)
+
 			err = db.Select(&res, sql, limit)
 
 		} else {
-			sql := "SELECT id, code, journey_name, journey_schedule, salesman, sites, questionnaires, signatures, require_selfie, person, email_to, start_journey, finish_journey, created_at, updated_at FROM journey_plan WHERE id > ? ORDER BY id DESC LIMIT ?"
+			sql := native + " WHERE id > ? ORDER BY id DESC LIMIT ?"
 			err = db.Select(&res, sql, maxID, limit)
 
 		}
 	} else {
-		sql := "SELECT id, code, journey_name, journey_schedule, salesman, sites, questionnaires, signatures, require_selfie, person, email_to, start_journey, finish_journey, created_at, updated_at FROM journey_plan WHERE id > ? ORDER BY id DESC LIMIT ?"
+		sql := native + " WHERE id > ? ORDER BY id DESC LIMIT ?"
 		err = db.Select(&res, sql, maxID, limit)
 
 	}
@@ -95,6 +102,9 @@ func (op *journeyOp) Store(
 	code string,
 	journeyName string,
 	journeySchedule int64,
+	datesCustom []string,
+	daysOfWeek []string,
+	datesOfMonth []string,
 	salesman []string,
 	sites []string,
 	questionnaires []string,
@@ -122,8 +132,17 @@ func (op *journeyOp) Store(
 	em := emailTo
 	emailTos := strings.Join(em, "|")
 
-	var sql = "INSERT INTO journey_plan (code, journey_name, journey_schedule, salesman, sites, questionnaires, signatures, require_selfie,person, email_to,created_at) VALUES ( ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-	res, err := db.Exec(sql, code, journeyName, journeySchedule, salesmans, sitess, questionnairess, signatures, requireSelfie, person, emailTos, createdAt)
+	dc := datesCustom
+	datesCustoms := strings.Join(dc, ",")
+
+	dow := daysOfWeek
+	daysOfWeeks := strings.Join(dow, ",")
+
+	dom := datesOfMonth
+	datesOfMonths := strings.Join(dom, ",")
+
+	var sql = "INSERT INTO journey_plan (code, journey_name, journey_schedule, dates_custom, days_of_week, dates_of_month, salesman, sites, questionnaires, signatures, require_selfie,person, email_to,created_at) VALUES ( ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	res, err := db.Exec(sql, code, journeyName, journeySchedule, datesCustoms, daysOfWeeks, datesOfMonths, salesmans, sitess, questionnairess, signatures, requireSelfie, person, emailTos, createdAt)
 	if err != nil {
 		return 0, err
 	}
@@ -132,7 +151,7 @@ func (op *journeyOp) Store(
 	if err != nil {
 		return 0, err
 	}
-	// fmt.Println(lID)
+
 	return lID, nil
 }
 

@@ -121,6 +121,31 @@ func (h *Contract) AddJourney(w http.ResponseWriter, r *http.Request) {
 	for _, em := range req.EmailTo {
 		emails = append(emails, em.Email)
 	}
+
+	if len(req.DatesCustom) > 0 {
+
+	}
+	datesCustom := make([]string, 0)
+	for _, dc := range req.DatesCustom {
+		datesCustom = append(datesCustom, dc.DatesCustom)
+	}
+
+	if len(req.DaysOfWeek) > 0 {
+
+	}
+	daysOfWeek := make([]string, 0)
+	for _, dow := range req.DaysOfWeek {
+		daysOfWeek = append(daysOfWeek, dow.DaysOfWeek)
+	}
+
+	if len(req.DatesOfMonth) > 0 {
+
+	}
+	datesOfMonth := make([]string, 0)
+	for _, dom := range req.DatesOfMonth {
+		datesOfMonth = append(datesOfMonth, dom.DateOfMonth)
+	}
+
 	// Sites := req.Sites
 	// Questionnaires := req.Questionnaires
 	Signatures := req.Signatures
@@ -137,6 +162,9 @@ func (h *Contract) AddJourney(w http.ResponseWriter, r *http.Request) {
 		code,
 		JourneyName,
 		JourneySchedule,
+		datesCustom,
+		daysOfWeek,
+		datesOfMonth,
 		assignedAuditors,
 		sitess,
 		questionnairess,
@@ -231,9 +259,7 @@ func (h *Contract) UpdateTimeJourney(w http.ResponseWriter, r *http.Request) {
 	JourneyID := req.JourneyID
 	StartTime := req.StartTime
 	EndTime := req.EndTime
-	fmt.Println(JourneyID)
-	fmt.Println(StartTime)
-	fmt.Println(EndTime)
+
 	mdl := usecase.UC{h.App}
 
 	_, err = mdl.UpdateTimeJourney(
@@ -309,6 +335,7 @@ func (h *Contract) AddTrackingTimeJourney(w http.ResponseWriter, r *http.Request
 	return
 }
 
+// GetAllJourneyMobile ...
 func (h *Contract) GetAllJourneyMobile(w http.ResponseWriter, r *http.Request) {
 	res, err := usecase.UC{h.App}.GetAllJourneyMobile()
 	if err != nil {

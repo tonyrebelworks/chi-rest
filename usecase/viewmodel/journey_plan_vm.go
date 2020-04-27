@@ -6,6 +6,9 @@ type JourneyPlanVM struct {
 	Code                  string              ` json:"code"`
 	JourneyName           string              ` json:"journeyName"`
 	JourneySchedule       int                 ` json:"journeySchedule"`
+	DateCustom            []int               ` json:"dateCustom"`
+	DaysOfWeek            []int               ` json:"daysOfWeek"`
+	DateOfMonth           []int               ` json:"dateOfMonth"`
 	Signatures            string              ` json:"signatures"`
 	RequireSelfie         bool                ` json:"requireSelfie"`
 	Person                string              ` json:"person"`
@@ -28,7 +31,7 @@ type JourneyPlanVM struct {
 	Sites                 []SitesVM           ` json:"sites"`
 	Questionnaires        []QuestionnairesVM  ` json:"questionnaires"`
 	AssignedAuditor       []AssignedAuditorVM ` json:"assignedAuditor"`
-	EmailTargets          []EmailTargetsVM    ` json:"emailTargets"`
+	EmailTargets          []string            ` json:"emailTargets"`
 	Activity              []ActivityVM        ` json:"activity"`
 }
 

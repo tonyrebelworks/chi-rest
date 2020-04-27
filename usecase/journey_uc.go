@@ -3,6 +3,8 @@ package usecase
 import (
 	"chi-rest/model"
 	"chi-rest/usecase/viewmodel"
+	"log"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -52,14 +54,14 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 			})
 		}
 
-		emailRes := make([]map[string]interface{}, 0)
+		// emailRes := make([]map[string]interface{}, 0)
 		email := a.EmailTo
 		arrEmail := strings.Split(email, "|")
-		for i := range arrEmail {
-			emailRes = append(emailRes, map[string]interface{}{
-				"email": arrEmail[i],
-			})
-		}
+		// for i := range arrEmail {
+		// 	emailRes = append(emailRes, map[string]interface{}{
+		// 		"email": arrEmail[i],
+		// 	})
+		// }
 
 		assignedAuditorRes := make([]map[string]interface{}, 0)
 		assignAud := a.Salesman
@@ -80,11 +82,60 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 			activityRes = append(activityRes, tempRes)
 		}
 
+		// datesCustom := strings.Split(a.DatesCustom.String, ",")
+		// daysOfWeek := strings.Split(a.DaysOfWeek.String, ",")
+		// datesOfMonth := strings.Split(a.DatesOfMonth.String, ",")
+		datesCustom := a.DatesCustom.String
+		daysOfWeek := a.DaysOfWeek.String
+		datesOfMonth := a.DatesOfMonth.String
+
+		tmpDC := strings.Split(datesCustom, ",")
+		datesCustomToInt := make([]int, 0, len(tmpDC))
+		if datesCustom != "" {
+			for _, raw := range tmpDC {
+				v, err := strconv.Atoi(raw)
+				if err != nil {
+					log.Print(err)
+					continue
+				}
+				datesCustomToInt = append(datesCustomToInt, v)
+			}
+		}
+
+		tmpDow := strings.Split(daysOfWeek, ",")
+		daysOfWeekToInt := make([]int, 0, len(tmpDow))
+		if daysOfWeek != "" {
+			for _, raw := range tmpDow {
+				v, err := strconv.Atoi(raw)
+				if err != nil {
+					log.Print(err)
+					continue
+				}
+				daysOfWeekToInt = append(daysOfWeekToInt, v)
+			}
+		}
+		tmpDom := strings.Split(datesOfMonth, ",")
+		datesOfMonthToInt := make([]int, 0, len(tmpDom))
+		if datesOfMonth != "" {
+			for _, raw := range tmpDom {
+				v, err := strconv.Atoi(raw)
+				if err != nil {
+					log.Print(err)
+					continue
+				}
+				datesOfMonthToInt = append(datesOfMonthToInt, v)
+			}
+		}
+
+		// fmt.Println(values)
 		resMap = append(resMap, map[string]interface{}{
 			"id":                    a.ID,
 			"code":                  a.Code,
 			"journeyName":           a.JourneyName,
 			"journeySchedule":       a.JourneySchedule,
+			"datesCustom":           datesCustomToInt,
+			"daysOfWeek":            daysOfWeekToInt,
+			"datesOfMonth":          datesOfMonthToInt,
 			"activity":              activityRes,
 			"signatures":            a.Signatures,
 			"requireSelfie":         a.RequireSelfie,
@@ -107,7 +158,7 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 			"updatedBy":             a.UpdatedBy.String,
 			"sites":                 sitesRes,
 			"questionnaires":        questionnairesRes,
-			"emailTargets":          emailRes,
+			"emailTargets":          arrEmail,
 			"assignedAuditor":       assignedAuditorRes,
 		})
 	}
@@ -149,14 +200,14 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 		})
 	}
 
-	emailRes := make([]viewmodel.EmailTargetsVM, 0)
+	// emailRes := make([]viewmodel.EmailTargetsVM, 0)
 	email := data.EmailTo
 	arrEmail := strings.Split(email, "|")
-	for i := range arrEmail {
-		emailRes = append(emailRes, viewmodel.EmailTargetsVM{
-			Email: arrEmail[i],
-		})
-	}
+	// for i := range arrEmail {
+	// 	emailRes = append(emailRes, viewmodel.EmailTargetsVM{
+	// 		Email: arrEmail[i],
+	// 	})
+	// }
 
 	dataActivity, err := model.ActivityOp.GetByJourneyCode(uc.DB, code)
 	if err != nil {
@@ -174,14 +225,59 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 
 	}
 
+	datesCustom := data.DatesCustom.String
+	daysOfWeek := data.DaysOfWeek.String
+	datesOfMonth := data.DatesOfMonth.String
+
+	tmpDC := strings.Split(datesCustom, ",")
+	datesCustomToInt := make([]int, 0, len(tmpDC))
+	if datesCustom != "" {
+		for _, raw := range tmpDC {
+			v, err := strconv.Atoi(raw)
+			if err != nil {
+				log.Print(err)
+				continue
+			}
+			datesCustomToInt = append(datesCustomToInt, v)
+		}
+	}
+
+	tmpDow := strings.Split(daysOfWeek, ",")
+	daysOfWeekToInt := make([]int, 0, len(tmpDow))
+	if daysOfWeek != "" {
+		for _, raw := range tmpDow {
+			v, err := strconv.Atoi(raw)
+			if err != nil {
+				log.Print(err)
+				continue
+			}
+			daysOfWeekToInt = append(daysOfWeekToInt, v)
+		}
+	}
+	tmpDom := strings.Split(datesOfMonth, ",")
+	datesOfMonthToInt := make([]int, 0, len(tmpDom))
+	if datesOfMonth != "" {
+		for _, raw := range tmpDom {
+			v, err := strconv.Atoi(raw)
+			if err != nil {
+				log.Print(err)
+				continue
+			}
+			datesOfMonthToInt = append(datesOfMonthToInt, v)
+		}
+	}
+
 	res := viewmodel.JourneyPlanVM{
 		ID:                    data.ID,
 		Code:                  data.Code,
 		JourneyName:           data.JourneyName,
 		JourneySchedule:       data.JourneySchedule,
+		DateCustom:            datesCustomToInt,
+		DaysOfWeek:            daysOfWeekToInt,
+		DateOfMonth:           datesOfMonthToInt,
 		AssignedAuditor:       assignedAuditorRes,
 		Sites:                 sitesRes,
-		EmailTargets:          emailRes,
+		EmailTargets:          arrEmail,
 		Questionnaires:        questionnairesRes,
 		Activity:              activityRes,
 		Signatures:            data.Signatures,
@@ -211,6 +307,9 @@ func (uc UC) StoreJourney(
 	code string,
 	journeyName string,
 	journeySchedule int64,
+	datesCustom []string,
+	daysOfWeek []string,
+	datesOfMonth []string,
 	salesman []string,
 	sites []string,
 	questionnaires []string,
@@ -221,7 +320,7 @@ func (uc UC) StoreJourney(
 
 ) (int64, error) {
 
-	dt, err := model.JourneyOp.Store(uc.DB, code, journeyName, journeySchedule, salesman, sites, questionnaires, signatures, requireSelfie, person, emailTo, time.Now().UTC())
+	dt, err := model.JourneyOp.Store(uc.DB, code, journeyName, journeySchedule, datesCustom, daysOfWeek, datesOfMonth, salesman, sites, questionnaires, signatures, requireSelfie, person, emailTo, time.Now().UTC())
 	return dt, err
 }
 
@@ -230,6 +329,9 @@ func (uc UC) UpdateJourney(
 	code string,
 	journeyName string,
 	journeySchedule int64,
+	// datesCustom string,
+	// daysOfWeek string,
+	// datesOfMonth string,
 	salesman string,
 	sites string,
 	questionnaires string,
