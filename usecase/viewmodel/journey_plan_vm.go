@@ -42,25 +42,25 @@ type SitesVM struct {
 
 // QuestionnairesVM ...
 type QuestionnairesVM struct {
-	QuestionnairesID      string                  `json:"questionnairesID"`
-	EmailTargets          []string                `json:"emailTargets"`
-	EndTime               *string                 `json:"endTime"`
-	HasDeadline           bool                    `json:"hasDeadline"`
-	IsDoneToday           bool                    `json:"isDoneToday"`
-	IsQuestionnaireExists bool                    `json:"isQuestionnaireExists"`
-	IsScheduledToday      bool                    `json:"isScheduledToday"`
-	Key                   string                  `json:"key"`
-	QuestionnaireDetails  QuestionnairesDetailsVM `json:"questionnaireDetails"`
-	QuestionnaireTitle    string                  `json:"questionnaireTitle"`
-	ScheduledDates        map[string]interface{}  `json:"scheduledDates"`
-	// ScheduledDates   ScheduledDatesVM `json:"scheduledDates"`
-	SelfieSignatures []string `json:"selfieSignatures"`
-	Signatures       int      `json:"signatures"`
-	StartTime        *string  `json:"startTime"`
-	TitleLowercase   string   `json:"titleLowercase"`
-	TotalCompleted   int      `json:"totalCompleted"`
-	TotalScheduled   int      `json:"totalScheduled"`
-	UnfinishedDates  []string `json:"unfinishedDates"`
+	QuestionnairesID string `json:"questionnairesID"`
+	// EmailTargets          []string                `json:"emailTargets"`
+	// EndTime               *string                 `json:"endTime"`
+	// HasDeadline           bool                    `json:"hasDeadline"`
+	// IsDoneToday           bool                    `json:"isDoneToday"`
+	// IsQuestionnaireExists bool                    `json:"isQuestionnaireExists"`
+	// IsScheduledToday      bool                    `json:"isScheduledToday"`
+	// Key                   string                  `json:"key"`
+	// QuestionnaireDetails  QuestionnairesDetailsVM `json:"questionnaireDetails"`
+	// QuestionnaireTitle    string                  `json:"questionnaireTitle"`
+	// ScheduledDates        map[string]interface{}  `json:"scheduledDates"`
+	// // ScheduledDates   ScheduledDatesVM `json:"scheduledDates"`
+	// SelfieSignatures []string `json:"selfieSignatures"`
+	// Signatures       int      `json:"signatures"`
+	// StartTime        *string  `json:"startTime"`
+	// TitleLowercase   string   `json:"titleLowercase"`
+	// TotalCompleted   int      `json:"totalCompleted"`
+	// TotalScheduled   int      `json:"totalScheduled"`
+	// UnfinishedDates  []string `json:"unfinishedDates"`
 }
 
 // QuestionnairesDetailsVM ...

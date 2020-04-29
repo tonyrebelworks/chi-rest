@@ -3,7 +3,6 @@ package usecase
 import (
 	"chi-rest/model"
 	"chi-rest/usecase/viewmodel"
-	"fmt"
 	"log"
 	"strconv"
 	"strings"
@@ -169,6 +168,43 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 
 // GetDetailJourney ...
 func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
+	// url := "https://api.hellonimbly.com/v1.0/questionnaires"
+	// req, err := http.NewRequest("GET", url, nil)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// kunci := ""
+	// req.Header.Set("Content-Type", "application/json")
+	// req.Header.Set("authorization", kunci)
+	// resp, err := http.DefaultClient.Do(req)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// defer resp.Body.Close()
+	// body, err := ioutil.ReadAll(resp.Body)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// // log.Printf("body = %v", string(body))
+	// type Data struct {
+	// 	Title string
+	// }
+	// type Summary struct {
+	// 	Message string
+	// 	Data    []Data
+	// }
+
+	// var summary = new(Summary)
+	// err3 := json.Unmarshal(body, &summary)
+	// if err3 != nil {
+	// 	fmt.Println("whoops:", err3)
+	// 	//outputs: whoops: <nil>
+	// }
+	// // fmt.Println(summary.Message)
+	// fmt.Println(summary.Data)
+
 	data, err := model.JourneyOp.GetDetail(uc.DB, code)
 	if err != nil {
 		return viewmodel.JourneyPlanVM{}, err
@@ -187,115 +223,116 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 	questionnaires := data.Questionnaires
 	arrQuestionnaires := strings.Split(questionnaires, "|")
 	for i := range arrQuestionnaires {
-		questionRes := []viewmodel.QuestionVM{}
-		for _, a := range arrQuestionnaires {
-			tempRes := viewmodel.QuestionVM{
-				Answer:         "",
-				AnswerRequired: true,
-				Category:       "",
-				Comment:        "",
-				Content:        "",
-				FlagLabel: map[string]interface{}{
-					"green":  "Yes",
-					"red":    "No",
-					"yellow": "",
-				},
-				PhotoLimit:   0,
-				PhotoMinimum: 0,
-				Reference:    "",
-				Score:        0,
-				ScoreWeight:  1,
-				Sku:          "",
-				Tags: map[string]interface{}{
-					"cVYNScrZ1SdjDpyCLGNK": true,
-				},
-				Type:         "number",
-				VideoLimit:   0,
-				VideoMinimum: 0,
-			}
-			fmt.Println(a)
-			questionRes = append(questionRes, tempRes)
-		}
+		// questionRes := []viewmodel.QuestionVM{}
+		// for _, a := range arrQuestionnaires {
+		// 	tempRes := viewmodel.QuestionVM{
+		// 		Answer:         "",
+		// 		AnswerRequired: true,
+		// 		Category:       "",
+		// 		Comment:        "",
+		// 		Content:        "",
+		// 		FlagLabel: map[string]interface{}{
+		// 			"green":  "Yes",
+		// 			"red":    "No",
+		// 			"yellow": "",
+		// 		},
+		// 		PhotoLimit:   0,
+		// 		PhotoMinimum: 0,
+		// 		Reference:    "",
+		// 		Score:        0,
+		// 		ScoreWeight:  1,
+		// 		Sku:          "",
+		// 		Tags: map[string]interface{}{
+		// 			"cVYNScrZ1SdjDpyCLGNK": true,
+		// 		},
+		// 		Type:         "number",
+		// 		VideoLimit:   0,
+		// 		VideoMinimum: 0,
+		// 	}
+		// 	fmt.Println(a)
+		// 	questionRes = append(questionRes, tempRes)
+		// }
 		questionnairesRes = append(questionnairesRes, viewmodel.QuestionnairesVM{
 
 			QuestionnairesID: arrQuestionnaires[i],
-			EmailTargets:     []string{"a", "b"},
-			// EndTime:               "",
-			HasDeadline:           false,
-			IsDoneToday:           false,
-			IsQuestionnaireExists: true,
-			IsScheduledToday:      true,
-			Key:                   "Journey-abc", // key journey
-			QuestionnaireDetails: viewmodel.QuestionnairesDetailsVM{
-				Key: arrQuestionnaires[i],
-				Value: viewmodel.QuestionnairesDetailsValueVM{
-					Disabled:        false,
-					Latest:          arrQuestionnaires[i],
-					OrganizationKey: "cs",
-					Questionnaire: viewmodel.QuestionnaireArrayVM{
-						DateCreated:        "2020-04-03T10:05:24.261+07:00",
-						DateUpdated:        "2020-04-03T10:05:24.261+07:00",
-						Disabled:           false,
-						ModifiedBy:         "bdj3lijfzcfRWEir6CUNYQ8IvvO2",
-						QuestionnaireIndex: arrQuestionnaires[i],
-						Questions:          questionRes,
+			// Title:            summary.Data,
+			// EmailTargets:     []string{"a", "b"},
+			// // EndTime:               "",
+			// HasDeadline:           false,
+			// IsDoneToday:           false,
+			// IsQuestionnaireExists: true,
+			// IsScheduledToday:      true,
+			// Key:                   "Journey-abc", // key journey
+			// QuestionnaireDetails: viewmodel.QuestionnairesDetailsVM{
+			// 	Key: arrQuestionnaires[i],
+			// 	Value: viewmodel.QuestionnairesDetailsValueVM{
+			// 		Disabled:        false,
+			// 		Latest:          arrQuestionnaires[i],
+			// 		OrganizationKey: "cs",
+			// 		Questionnaire: viewmodel.QuestionnaireArrayVM{
+			// 			DateCreated:        "2020-04-03T10:05:24.261+07:00",
+			// 			DateUpdated:        "2020-04-03T10:05:24.261+07:00",
+			// 			Disabled:           false,
+			// 			ModifiedBy:         "bdj3lijfzcfRWEir6CUNYQ8IvvO2",
+			// 			QuestionnaireIndex: arrQuestionnaires[i],
+			// 			Questions:          questionRes,
 
-						// Questions: viewmodel.QuestionVM{
-						// 	Answer:         "",
-						// 	AnswerRequired: true,
-						// 	Category:       "",
-						// 	Comment:        "",
-						// 	Content:        "",
-						// 	FlagLabel: map[string]interface{}{
-						// 		"green":  "Yes",
-						// 		"red":    "No",
-						// 		"yellow": "",
-						// 	},
-						// 	PhotoLimit:   0,
-						// 	PhotoMinimum: 0,
-						// 	Reference:    "",
-						// 	Score:        0,
-						// 	ScoreWeight:  1,
-						// 	Sku:          "",
-						// 	Tags: map[string]interface{}{
-						// 		"cVYNScrZ1SdjDpyCLGNK": true,
-						// 	},
-						// 	Type:         "number",
-						// 	VideoLimit:   0,
-						// 	VideoMinimum: 0,
-						// },
-						Status: "published",
-						Tags:   "tBakj2lhqW5T4JXvc9xx",
-						Title:  "Contoh Questionnaires",
-						Type:   "default",
-					},
-					Tags:     "tBakj2lhqW5T4JXvc9xx",
-					Title:    "Contoh Questionnaires",
-					Versions: "-M3y--ryqe8MSJ0dmkaX",
-				},
-			},
-			QuestionnaireTitle: "Contoh Questionnaire",
-			ScheduledDates: map[string]interface{}{
-				"2020-04-21": map[string]interface{}{
-					"isComplete": false,
-				},
-				"2020-04-22": map[string]interface{}{
-					"isComplete": false,
-				},
-				"2020-04-23": map[string]interface{}{
-					"isComplete": false,
-				},
-				"2020-04-24": map[string]interface{}{
-					"isComplete": false,
-				},
-			},
-			SelfieSignatures: []string{},
-			Signatures:       0,
-			// StartTime:        "",
-			TitleLowercase:  "contoh questionnaire",
-			TotalCompleted:  0,
-			TotalScheduled:  7,
-			UnfinishedDates: []string{"2020-04-27", "2020-04-28", "2020-04-29", "2020-04-30"},
+			// 			// Questions: viewmodel.QuestionVM{
+			// 			// 	Answer:         "",
+			// 			// 	AnswerRequired: true,
+			// 			// 	Category:       "",
+			// 			// 	Comment:        "",
+			// 			// 	Content:        "",
+			// 			// 	FlagLabel: map[string]interface{}{
+			// 			// 		"green":  "Yes",
+			// 			// 		"red":    "No",
+			// 			// 		"yellow": "",
+			// 			// 	},
+			// 			// 	PhotoLimit:   0,
+			// 			// 	PhotoMinimum: 0,
+			// 			// 	Reference:    "",
+			// 			// 	Score:        0,
+			// 			// 	ScoreWeight:  1,
+			// 			// 	Sku:          "",
+			// 			// 	Tags: map[string]interface{}{
+			// 			// 		"cVYNScrZ1SdjDpyCLGNK": true,
+			// 			// 	},
+			// 			// 	Type:         "number",
+			// 			// 	VideoLimit:   0,
+			// 			// 	VideoMinimum: 0,
+			// 			// },
+			// 			Status: "published",
+			// 			Tags:   "tBakj2lhqW5T4JXvc9xx",
+			// 			Title:  "Contoh Questionnaires",
+			// 			Type:   "default",
+			// 		},
+			// 		Tags:     "tBakj2lhqW5T4JXvc9xx",
+			// 		Title:    "Contoh Questionnaires",
+			// 		Versions: "-M3y--ryqe8MSJ0dmkaX",
+			// 	},
+			// },
+			// QuestionnaireTitle: "Contoh Questionnaire",
+			// ScheduledDates: map[string]interface{}{
+			// 	"2020-04-21": map[string]interface{}{
+			// 		"isComplete": false,
+			// 	},
+			// 	"2020-04-22": map[string]interface{}{
+			// 		"isComplete": false,
+			// 	},
+			// 	"2020-04-23": map[string]interface{}{
+			// 		"isComplete": false,
+			// 	},
+			// 	"2020-04-24": map[string]interface{}{
+			// 		"isComplete": false,
+			// 	},
+			// },
+			// SelfieSignatures: []string{},
+			// Signatures:       0,
+			// // StartTime:        "",
+			// TitleLowercase:  "contoh questionnaire",
+			// TotalCompleted:  0,
+			// TotalScheduled:  7,
+			// UnfinishedDates: []string{"2020-04-27", "2020-04-28", "2020-04-29", "2020-04-30"},
 		})
 	}
 
