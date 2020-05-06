@@ -91,3 +91,8 @@ type DaysOfWeek struct {
 type DatesOfMonth struct {
 	DateOfMonth string `json:"datesOfMonth" `
 }
+
+// UpdateInterval ...
+type UpdateInterval struct {
+	TimePerSecond int `json:"timePerSecond" validate:"required"`
+}

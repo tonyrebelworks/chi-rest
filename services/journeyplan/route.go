@@ -32,6 +32,8 @@ func RegisterRoutes(r *chi.Mux, app *bootstrap.App) {
 		r.Get("/journeymobile", h.GetAllJourneyMobile)
 		r.Get("/journeymobile/{code}", h.GetDetailJourneyMobile)
 		r.Put("/journey/time", h.UpdateTimeJourney)
+		r.Get("/journey/interval", h.GetInterval)
+		r.Put("/journey/interval", h.UpdateInterval)
 		r.Post("/journey/trackingtime", h.AddTrackingTimeJourney)
 		r.Post("/journey/url", h.AddURLFirebase)
 

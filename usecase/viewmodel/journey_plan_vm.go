@@ -199,9 +199,14 @@ type ReportJourneyPlanVM struct {
 
 // TrackingTimeGPSVM ...
 type TrackingTimeGPSVM struct {
-	TrackingTime string `json:"trackingTime"`
-	Lat          string `json:"lat"`
-	Long         string `json:"long"`
+	TrackingTime string        `json:"trackingTime"`
+	Coordinates  CoordinatesVM `json:"coordinates"`
+}
+
+// CoordinatesVM ...
+type CoordinatesVM struct {
+	Lat  string `json:"lat"`
+	Long string `json:"long"`
 }
 
 // GetAllJourneyPlanMobileVM ...
@@ -227,4 +232,9 @@ type GetAllJourneyPlanMobileVM struct {
 // ReportsVM ...
 type ReportsVM struct {
 	URL string `json:"url"`
+}
+
+// GetIntervalVM ...
+type GetIntervalVM struct {
+	TimePerSecond int ` json:"timePerSecond"`
 }

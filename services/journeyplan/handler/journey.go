@@ -375,3 +375,39 @@ func (h *Contract) AddURLFirebase(w http.ResponseWriter, r *http.Request) {
 	h.SendSuccess(w, map[string]interface{}{}, lastID)
 	return
 }
+
+//GetInterval ...
+func (h *Contract) GetInterval(w http.ResponseWriter, r *http.Request) {
+	res, err := usecase.UC{h.App}.GetInterval()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	h.SendSuccess(w, res, nil)
+	return
+}
+
+// UpdateInterval ...
+func (h *Contract) UpdateInterval(w http.ResponseWriter, r *http.Request) {
+	var err error
+
+	req := request.UpdateInterval{}
+	if err = h.Bind(r, &req); err != nil {
+		h.SendBadRequest(w, err.Error())
+		return
+	}
+
+	TimePerSecond := req.TimePerSecond
+
+	mdl := usecase.UC{h.App}
+
+	_, err = mdl.UpdateInterval(
+		TimePerSecond)
+	if err != nil {
+		h.SendBadRequest(w, err.Error())
+		return
+	}
+
+	h.SendSuccess(w, map[string]interface{}{}, nil)
+	return
+}

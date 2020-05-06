@@ -566,8 +566,10 @@ func (uc UC) GetReportJourney(code string) (viewmodel.ReportJourneyPlanVM, error
 	for _, a := range dataTraTi {
 		tempRes := viewmodel.TrackingTimeGPSVM{
 			TrackingTime: a.CreatedAt.String,
-			Lat:          a.Latitude,
-			Long:         a.Longitude,
+			Coordinates: viewmodel.CoordinatesVM{
+				Lat:  a.Latitude,
+				Long: a.Longitude,
+			},
 		}
 		traTiRes = append(traTiRes, tempRes)
 
@@ -631,7 +633,7 @@ func (uc UC) GetReportJourney(code string) (viewmodel.ReportJourneyPlanVM, error
 		StartJourney:    data.StartJourney.String,
 		FinishJourney:   data.FinishJourney.String,
 		CreatedAt:       data.CreatedAt.String,
-		// TrackingTimeGPS: traTiRes,
+		TrackingTimeGPS: traTiRes,
 	}
 
 	return res, err
@@ -691,5 +693,32 @@ func (uc UC) AddURLFirebase(
 ) (int64, error) {
 
 	dt, err := model.ReportFirebaseOp.Store(uc.DB, url, journeyID, time.Now().UTC())
+	return dt, err
+}
+
+// GetInterval ...
+func (uc UC) GetInterval() ([]viewmodel.GetIntervalVM, error) {
+	data, err := model.IntervalOp.GetInterval(uc.DB)
+	if err != nil {
+		return nil, err
+	}
+
+	resMap := make([]viewmodel.GetIntervalVM, 0)
+	for _, a := range data {
+
+		resMap = append(resMap, viewmodel.GetIntervalVM{
+			TimePerSecond: a.TimePerSecond,
+		})
+	}
+
+	return resMap, err
+}
+
+// UpdateInterval ...
+func (uc UC) UpdateInterval(
+	TimePerSecond int,
+) (int64, error) {
+
+	dt, err := model.IntervalOp.UpdateInterval(uc.DB, TimePerSecond)
 	return dt, err
 }
