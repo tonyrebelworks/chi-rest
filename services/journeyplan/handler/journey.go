@@ -88,7 +88,6 @@ func (h *Contract) AddJourney(w http.ResponseWriter, r *http.Request) {
 
 	JourneyName := req.JourneyName
 	JourneySchedule := req.JourneySchedule
-	// Salesman := req.Salesman
 
 	if len(req.AssignedAuditor) > 0 {
 
@@ -146,17 +145,9 @@ func (h *Contract) AddJourney(w http.ResponseWriter, r *http.Request) {
 		datesOfMonth = append(datesOfMonth, dom.DateOfMonth)
 	}
 
-	// Sites := req.Sites
-	// Questionnaires := req.Questionnaires
 	Signatures := req.Signatures
 	RequireSelfie := req.RequireSelfie
 	Person := req.Person
-	// EmailTo := req.EmailTo
-	// Activity := req.Activity
-	// StartJourney := req.StartJourney
-	// FinishJourney := req.FinishJourney
-
-	// mdl := usecase.UC{h.App}.StoreJourney(code, JourneyName, JourneySchedule, Salesman, Sites, Questionnaires, Signatures, RequireSelfie, EmailTo, Activity, StartJourney, FinishJourney)
 
 	lastID, err := usecase.UC{h.App}.StoreJourney(
 		code,
@@ -172,7 +163,6 @@ func (h *Contract) AddJourney(w http.ResponseWriter, r *http.Request) {
 		RequireSelfie,
 		Person,
 		emails,
-		// Activity,
 	)
 	if err != nil {
 		h.SendBadRequest(w, err.Error())
@@ -192,11 +182,6 @@ func (h *Contract) UpdateJourney(w http.ResponseWriter, r *http.Request) {
 		h.SendBadRequest(w, err.Error())
 		return
 	}
-
-	// if err = h.Handler.Validate.Struct(req); err != nil {
-	// 	h.SendRequestValidationError(w, err.(validator.ValidationErrors))
-	// 	return
-	// }
 
 	JourneyName := req.JourneyName
 	JourneySchedule := req.JourneySchedule

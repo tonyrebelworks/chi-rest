@@ -45,32 +45,14 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 		// 	})
 		// }
 
-		// questionnairesRes := make([]map[string]interface{}, 0)
 		question := a.Questionnaires
 		arrQuestion := strings.Split(question, "|")
-		// for i := range arrQuestion {
-		// 	questionnairesRes = append(questionnairesRes, map[string]interface{}{
-		// 		"questionnaireID": arrQuestion[i],
-		// 	})
-		// }
 
-		// emailRes := make([]map[string]interface{}, 0)
 		email := a.EmailTo
 		arrEmail := strings.Split(email, "|")
-		// for i := range arrEmail {
-		// 	emailRes = append(emailRes, map[string]interface{}{
-		// 		"email": arrEmail[i],
-		// 	})
-		// }
 
-		// assignedAuditorRes := make([]map[string]interface{}, 0)
 		assignAud := a.Salesman
 		arrAssignAud := strings.Split(assignAud, "|")
-		// for i := range arrAssignAud {
-		// 	assignedAuditorRes = append(assignedAuditorRes, map[string]interface{}{
-		// 		"userID": arrAssignAud[i],
-		// 	})
-		// }
 
 		var strAssignAud string
 		if len(arrAssignAud) > 1 {
@@ -89,9 +71,6 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 			activityRes = append(activityRes, tempRes)
 		}
 
-		// datesCustom := strings.Split(a.DatesCustom.String, ",")
-		// daysOfWeek := strings.Split(a.DaysOfWeek.String, ",")
-		// datesOfMonth := strings.Split(a.DatesOfMonth.String, ",")
 		datesCustom := a.DatesCustom.String
 		daysOfWeek := a.DaysOfWeek.String
 		datesOfMonth := a.DatesOfMonth.String
@@ -146,21 +125,10 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 			typeJourneySchedule = "monthly"
 		}
 
-		// fmt.Println(values)
 		resMap = append(resMap, map[string]interface{}{
-			"id":          a.ID,
-			"code":        a.Code,
-			"journeyName": a.JourneyName,
-			// "journeySchedule":  journeySchedule,
-			// "datesCustom":      datesCustomToInt,
-			// "daysOfWeek":       daysOfWeekToInt,
-			// "datesOfMonth":     datesOfMonthToInt,
-			// "activity":         activityRes,
-			// "signatures":       a.Signatures,
-			// "requireSelfie":    a.RequireSelfie,
-			// "person":           a.Person.String,
-			// "startTimeJourney": a.StartJourney.String,
-			// "endTimeJourney":   a.FinishJourney.String,
+			"id":               a.ID,
+			"code":             a.Code,
+			"journeyName":      a.JourneyName,
 			"assignedAuditor":  strAssignAud,
 			"auditors":         arrAssignAud,
 			"departmentKey":    "",
@@ -174,16 +142,15 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 			"emailTargets":     arrEmail,
 			"startTimeJourney": a.StartJourney.String,
 			"endTimeJourney":   a.FinishJourney.String,
-
-			"createdAt": a.CreatedAt.String,
-			"createdBy": a.CreatedBy.String,
-			"updatedAt": a.UpdatedAt.String,
-			"updatedBy": a.UpdatedBy.String,
-
-			// "sites":           sitesRes,
-			// "questionnaires":  questionnairesRes,
-			// "emailTargets":    arrEmail,
-			// "assignedAuditor": assignedAuditorRes,
+			"datesCustom":      datesCustomToInt,
+			"daysOfWeek":       daysOfWeekToInt,
+			"datesOfMonth":     datesOfMonthToInt,
+			"journeySchedule":  journeySchedule,
+			"activity":         activityRes,
+			"createdAt":        a.CreatedAt.String,
+			"createdBy":        a.CreatedBy.String,
+			"updatedAt":        a.UpdatedAt.String,
+			"updatedBy":        a.UpdatedBy.String,
 		})
 	}
 
@@ -192,42 +159,6 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 
 // GetDetailJourney ...
 func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
-	// url := "https://api.hellonimbly.com/v1.0/questionnaires"
-	// req, err := http.NewRequest("GET", url, nil)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// kunci := ""
-	// req.Header.Set("Content-Type", "application/json")
-	// req.Header.Set("authorization", kunci)
-	// resp, err := http.DefaultClient.Do(req)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// defer resp.Body.Close()
-	// body, err := ioutil.ReadAll(resp.Body)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// // log.Printf("body = %v", string(body))
-	// type Data struct {
-	// 	Title string
-	// }
-	// type Summary struct {
-	// 	Message string
-	// 	Data    []Data
-	// }
-
-	// var summary = new(Summary)
-	// err3 := json.Unmarshal(body, &summary)
-	// if err3 != nil {
-	// 	fmt.Println("whoops:", err3)
-	// 	//outputs: whoops: <nil>
-	// }
-	// // fmt.Println(summary.Message)
-	// fmt.Println(summary.Data)
 
 	data, err := model.JourneyOp.GetDetail(uc.DB, code)
 	if err != nil {
@@ -247,32 +178,15 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 		typeJourneySchedule = "monthly"
 	}
 
-	// sitesRes := make([]viewmodel.SitesVM, 0)
 	site := data.Sites
 	arrSites := strings.Split(site, "|")
-	// for i := range arrSites {
-	// 	sitesRes = append(sitesRes, viewmodel.SitesVM{
-	// 		SiteID: arrSites[i],
-	// 	})
-	// }
 
-	// questionnairesRes := make([]viewmodel.QuestionnairesVM, 0)
 	questionnaires := data.Questionnaires
 	arrQuestionnaires := strings.Split(questionnaires, "|")
-	// for i := range arrQuestionnaires {
-	// 	questionnairesRes = append(questionnairesRes, viewmodel.QuestionnairesVM{
-	// 		QuestionnairesID: arrQuestionnaires[i],
-	// 	})
-	// }
 
-	// assignedAuditorRes := make([]viewmodel.AssignedAuditorVM, 0)
 	assignAud := data.Salesman
 	arrAssignAud := strings.Split(assignAud, "|")
-	// for i := range arrAssignAud {
-	// 	assignedAuditorRes = append(assignedAuditorRes, viewmodel.AssignedAuditorVM{
-	// 		UserID: arrAssignAud[i],
-	// 	})
-	// }
+
 	var strAssignAud string
 	if len(arrAssignAud) > 1 {
 		strAssignAud = ""
@@ -280,14 +194,8 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 		strAssignAud = strings.Join(arrAssignAud, "|")
 	}
 
-	// emailRes := make([]viewmodel.EmailTargetsVM, 0)
 	email := data.EmailTo
 	arrEmail := strings.Split(email, "|")
-	// for i := range arrEmail {
-	// 	emailRes = append(emailRes, viewmodel.EmailTargetsVM{
-	// 		Email: arrEmail[i],
-	// 	})
-	// }
 
 	dataActivity, err := model.ActivityOp.GetByJourneyCode(uc.DB, code)
 	if err != nil {
@@ -348,10 +256,9 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 	}
 
 	res := viewmodel.JourneyPlanVM{
-		ID:          data.ID,
-		Code:        data.Code,
-		JourneyName: data.JourneyName,
-		// AssignedAuditor: arrAssignAud,
+		ID:               data.ID,
+		Code:             data.Code,
+		JourneyName:      data.JourneyName,
 		AssignedAuditor:  strAssignAud,
 		Auditors:         arrAssignAud,
 		DepartmentKey:    "",
@@ -365,17 +272,15 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 		EmailTargets:     arrEmail,
 		StartTimeJourney: data.StartJourney.String,
 		EndTimeJourney:   data.FinishJourney.String,
-		// StartTimeJourney: "",
-		// EndTimeJourney:   "",
-		JourneySchedule: data.JourneySchedule,
-		DateCustom:      datesCustomToInt,
-		DaysOfWeek:      daysOfWeekToInt,
-		DateOfMonth:     datesOfMonthToInt,
-		Activity:        activityRes,
-		CreatedAt:       data.CreatedAt.String,
-		CreatedBy:       "",
-		UpdatedAt:       data.UpdatedAt.String,
-		UpdatedBy:       "",
+		JourneySchedule:  data.JourneySchedule,
+		DateCustom:       datesCustomToInt,
+		DaysOfWeek:       daysOfWeekToInt,
+		DateOfMonth:      datesOfMonthToInt,
+		Activity:         activityRes,
+		CreatedAt:        data.CreatedAt.String,
+		CreatedBy:        "",
+		UpdatedAt:        data.UpdatedAt.String,
+		UpdatedBy:        "",
 	}
 
 	return res, err
@@ -408,9 +313,6 @@ func (uc UC) UpdateJourney(
 	code string,
 	journeyName string,
 	journeySchedule int64,
-	// datesCustom string,
-	// daysOfWeek string,
-	// datesOfMonth string,
 	salesman string,
 	sites string,
 	questionnaires string,
@@ -502,21 +404,18 @@ func (uc UC) GetDetailJourneyMobile(code string) (viewmodel.JourneyPlanMobileVM,
 	}
 
 	res := viewmodel.JourneyPlanMobileVM{
-		// ID:                    data.ID,
-		Code:            data.Code,
-		Name:            data.JourneyName,
-		StartTime:       data.StartJourney.String,
-		EndTime:         data.FinishJourney.String,
-		Type:            "basic",
-		Schedule:        data.JourneySchedule,
-		Language:        "en",
-		Signatures:      data.Signatures,
-		SelfieSignature: data.RequireSelfie,
-		Person:          data.Person.String,
-		Questionnaires:  questionnairesRes,
-		Sites:           sitesRes,
-		// CreatedAt:             data.CreatedAt.String,
-		// UpdatedAt:             data.UpdatedAt.String,
+		Code:                  data.Code,
+		Name:                  data.JourneyName,
+		StartTime:             data.StartJourney.String,
+		EndTime:               data.FinishJourney.String,
+		Type:                  "basic",
+		Schedule:              data.JourneySchedule,
+		Language:              "en",
+		Signatures:            data.Signatures,
+		SelfieSignature:       data.RequireSelfie,
+		Person:                data.Person.String,
+		Questionnaires:        questionnairesRes,
+		Sites:                 sitesRes,
 		IsDueToday:            true,
 		IsDraft:               false,
 		IsMakeUp:              false,
@@ -571,15 +470,6 @@ func (uc UC) GetReportJourney(code string) (viewmodel.ReportJourneyPlanVM, error
 
 	}
 
-	// reportsRes := make([]viewmodel.ReportsVM, 0)
-	// report := data.Reports
-	// arrReports := strings.Split(report, "|")
-	// for i := range arrReports {
-	// 	sitesRes = append(reportsRes, viewmodel.ReportsVM{
-	// 		URL: arrReports[i],
-	// 	})
-	// }
-
 	assignedAuditorRes := make([]viewmodel.AssignedAuditorVM, 0)
 	assignAud := data.Salesman
 	arrAssignAud := strings.Split(assignAud, "|")
@@ -593,16 +483,6 @@ func (uc UC) GetReportJourney(code string) (viewmodel.ReportJourneyPlanVM, error
 	if err != nil {
 		return viewmodel.ReportJourneyPlanVM{}, err
 	}
-
-	// traTiRes := make([]viewmodel.TrackingTimeGPSVM, 0)
-	// traTi := dataTraTi
-	// arrTraTi := strings.Split(traTi, "|")
-	// for i := range arrTraTi {
-	// 	traTiRes = append(traTiRes, viewmodel.TrackingTimeGPSVM{
-	// 		TrackingTime: arrTraTi[i],
-	// 		Coordinates:  arrTraTi[i],
-	// 	})
-	// }
 
 	traTiRes := []viewmodel.TrackingTimeGPSVM{}
 	for _, a := range dataTraTi {
@@ -705,22 +585,14 @@ func (uc UC) GetAllJourneyMobile() ([]viewmodel.GetAllJourneyPlanMobileVM, error
 	for _, a := range data {
 
 		resMap = append(resMap, viewmodel.GetAllJourneyPlanMobileVM{
-			Code:     a.Code,
-			Name:     a.JourneyName,
-			Schedule: a.JourneySchedule,
-			Type:     "basic",
-			Priority: true,
-			Language: "en",
-			// IsDueToday:            true,
-			// IsDraft:               false,
-			// IsMakeUp:              false,
+			Code:                a.Code,
+			Name:                a.JourneyName,
+			Schedule:            a.JourneySchedule,
+			Type:                "basic",
+			Priority:            true,
+			Language:            "en",
 			TodayCompletedCount: 0,
 			CompletedCount:      0,
-			// TodayScheduleCount:    1,
-			// IsCompletedToday:      false,
-			// IsCompletedThisPeriod: false,
-			// ScheduleCount:         7,
-			// IsScheduleThisPeriod:  true,
 		})
 	}
 
