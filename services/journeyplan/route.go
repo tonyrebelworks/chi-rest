@@ -37,5 +37,11 @@ func RegisterRoutes(r *chi.Mux, app *bootstrap.App) {
 		r.Post("/journey/trackingtime", h.AddTrackingTimeJourney)
 		r.Post("/journey/url", h.AddURLFirebase)
 
+		//Competitor Analysis
+		r.Get("/company", h.GetAllCompany)
+		// r.Get("/company/{code}", h.GetDetailCompany)
+		// r.Post("/company", h.AddCompany)
+		// r.Put("/company/{code}", h.UpdateCompany)
+
 	})
 }

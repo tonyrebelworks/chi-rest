@@ -2,40 +2,34 @@ package viewmodel
 
 // JourneyPlanVM ...
 type JourneyPlanVM struct {
-	ID                    uint   ` json:"id"`
-	Code                  string ` json:"code"`
-	JourneyName           string ` json:"journeyName"`
-	JourneySchedule       int    ` json:"journeySchedule"`
-	DateCustom            []int  ` json:"dateCustom"`
-	DaysOfWeek            []int  ` json:"daysOfWeek"`
-	DateOfMonth           []int  ` json:"dateOfMonth"`
-	Signatures            string ` json:"signatures"`
-	RequireSelfie         bool   ` json:"requireSelfie"`
-	Person                string ` json:"person"`
-	StartTime             string ` json:"startTime"`
-	EndTime               string ` json:"endTime"`
-	IsDueToday            bool   ` json:"isDueToday"`
-	IsDraft               bool   ` json:"isDraft"`
-	IsMakeUp              bool   ` json:"isMakeUp"`
-	TodayCompletedCount   int    ` json:"todayCompletedCount"`
-	CompletedCount        int    ` json:"completedCount"`
-	TodayScheduleCount    int    ` json:"todayScheduleCount"`
-	IsCompletedToday      bool   ` json:"isCompletedToday"`
-	IsCompletedThisPeriod bool   ` json:"isCompletedThisPeriod"`
-	ScheduleCount         int    ` json:"scheduleCount"`
-	IsScheduleThisPeriod  bool   ` json:"isScheduleThisPeriod"`
-	CreatedAt             string ` json:"createdAt"`
-	CreatedBy             string ` json:"createdBy"`
-	UpdatedAt             string ` json:"updatedAt"`
-	UpdatedBy             string ` json:"updatedBy"`
+	ID              uint     ` json:"id"`
+	Code            string   ` json:"code"`
+	JourneyName     string   ` json:"journeyName"`
+	AssignedAuditor string   ` json:"assignedAuditor"`
+	Auditors        []string ` json:"auditors"`
+	DepartmentKey   string   ` json:"departmentKey"`
+	Type            string   ` json:"type"`
 	// Sites                 []SitesVM           ` json:"sites"`
 	Sites []string ` json:"sites"`
 	// Questionnaires        []QuestionnairesVM  ` json:"questionnaires"`
-	Questionnaires []string ` json:"questionnaires"`
+	Questionnaires   []string ` json:"questionnaires"`
+	Signatures       string   ` json:"signatures"`
+	RequireSelfie    bool     ` json:"requireSelfie"`
+	SelfieSignature  []string ` json:"selfieSignature"`
+	Person           string   ` json:"person"`
+	EmailTargets     []string ` json:"emailTargets"`
+	StartTimeJourney string   ` json:"startTimeJourney"`
+	EndTimeJourney   string   ` json:"endTimeJourney"`
+	CreatedAt        string   ` json:"createdAt"`
+	CreatedBy        string   ` json:"createdBy"`
+	UpdatedAt        string   ` json:"updatedAt"`
+	UpdatedBy        string   ` json:"updatedBy"`
+	JourneySchedule  int      ` json:"journeySchedule"`
+	DateCustom       []int    ` json:"dateCustom"`
+	DaysOfWeek       []int    ` json:"daysOfWeek"`
+	DateOfMonth      []int    ` json:"datesOfMonth"`
 	// AssignedAuditor []AssignedAuditorVM ` json:"assignedAuditor"`
-	AssignedAuditor []string     ` json:"assignedAuditor"`
-	EmailTargets    []string     ` json:"emailTargets"`
-	Activity        []ActivityVM ` json:"activity"`
+	Activity []ActivityVM ` json:"activity"`
 }
 
 // SitesVM ...

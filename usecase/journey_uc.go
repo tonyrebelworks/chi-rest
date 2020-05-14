@@ -36,23 +36,23 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 			return nil, pagination, err
 		}
 
-		sitesRes := make([]map[string]interface{}, 0)
+		// sitesRes := make([]map[string]interface{}, 0)
 		site := a.Sites
 		arrSites := strings.Split(site, "|")
-		for i := range arrSites {
-			sitesRes = append(sitesRes, map[string]interface{}{
-				"siteID": arrSites[i],
-			})
-		}
+		// for i := range arrSites {
+		// 	sitesRes = append(sitesRes, map[string]interface{}{
+		// 		"siteID": arrSites[i],
+		// 	})
+		// }
 
-		questionnairesRes := make([]map[string]interface{}, 0)
+		// questionnairesRes := make([]map[string]interface{}, 0)
 		question := a.Questionnaires
 		arrQuestion := strings.Split(question, "|")
-		for i := range arrQuestion {
-			questionnairesRes = append(questionnairesRes, map[string]interface{}{
-				"questionnaireID": arrQuestion[i],
-			})
-		}
+		// for i := range arrQuestion {
+		// 	questionnairesRes = append(questionnairesRes, map[string]interface{}{
+		// 		"questionnaireID": arrQuestion[i],
+		// 	})
+		// }
 
 		// emailRes := make([]map[string]interface{}, 0)
 		email := a.EmailTo
@@ -63,13 +63,20 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 		// 	})
 		// }
 
-		assignedAuditorRes := make([]map[string]interface{}, 0)
+		// assignedAuditorRes := make([]map[string]interface{}, 0)
 		assignAud := a.Salesman
 		arrAssignAud := strings.Split(assignAud, "|")
-		for i := range arrAssignAud {
-			assignedAuditorRes = append(assignedAuditorRes, map[string]interface{}{
-				"userID": arrAssignAud[i],
-			})
+		// for i := range arrAssignAud {
+		// 	assignedAuditorRes = append(assignedAuditorRes, map[string]interface{}{
+		// 		"userID": arrAssignAud[i],
+		// 	})
+		// }
+
+		var strAssignAud string
+		if len(arrAssignAud) > 1 {
+			strAssignAud = ""
+		} else {
+			strAssignAud = strings.Join(arrAssignAud, "|")
 		}
 
 		activityRes := []viewmodel.ActivityVM{}
@@ -126,40 +133,57 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 				datesOfMonthToInt = append(datesOfMonthToInt, v)
 			}
 		}
+		journeySchedule := a.JourneySchedule
+		var typeJourneySchedule string
+
+		if journeySchedule == 1 {
+			typeJourneySchedule = "daily"
+		}
+		if journeySchedule == 2 {
+			typeJourneySchedule = "weekly"
+		}
+		if journeySchedule == 3 {
+			typeJourneySchedule = "monthly"
+		}
 
 		// fmt.Println(values)
 		resMap = append(resMap, map[string]interface{}{
-			"id":                    a.ID,
-			"code":                  a.Code,
-			"journeyName":           a.JourneyName,
-			"journeySchedule":       a.JourneySchedule,
-			"datesCustom":           datesCustomToInt,
-			"daysOfWeek":            daysOfWeekToInt,
-			"datesOfMonth":          datesOfMonthToInt,
-			"activity":              activityRes,
-			"signatures":            a.Signatures,
-			"requireSelfie":         a.RequireSelfie,
-			"person":                a.Person.String,
-			"startTime":             a.StartJourney.String,
-			"endTime":               a.FinishJourney.String,
-			"isDueToday":            true,
-			"isDraft":               false,
-			"isMakeUp":              false,
-			"todayCompletedCount":   0,
-			"completedCount":        0,
-			"todayScheduleCount":    1,
-			"isCompletedToday":      false,
-			"isCompletedThisPeriod": false,
-			"scheduleCount":         7,
-			"isScheduleThisPeriod":  true,
-			"createdAt":             a.CreatedAt.String,
-			"createdBy":             a.CreatedBy.String,
-			"updatedAt":             a.UpdatedAt.String,
-			"updatedBy":             a.UpdatedBy.String,
-			"sites":                 sitesRes,
-			"questionnaires":        questionnairesRes,
-			"emailTargets":          arrEmail,
-			"assignedAuditor":       assignedAuditorRes,
+			"id":          a.ID,
+			"code":        a.Code,
+			"journeyName": a.JourneyName,
+			// "journeySchedule":  journeySchedule,
+			// "datesCustom":      datesCustomToInt,
+			// "daysOfWeek":       daysOfWeekToInt,
+			// "datesOfMonth":     datesOfMonthToInt,
+			// "activity":         activityRes,
+			// "signatures":       a.Signatures,
+			// "requireSelfie":    a.RequireSelfie,
+			// "person":           a.Person.String,
+			// "startTimeJourney": a.StartJourney.String,
+			// "endTimeJourney":   a.FinishJourney.String,
+			"assignedAuditor":  strAssignAud,
+			"auditors":         arrAssignAud,
+			"departmentKey":    "",
+			"type":             typeJourneySchedule,
+			"sites":            arrSites,
+			"questionnaires":   arrQuestion,
+			"signatures":       a.Signatures,
+			"requireSelfie":    a.RequireSelfie,
+			"selfieSignature":  []string{},
+			"person":           a.Person.String,
+			"emailTargets":     arrEmail,
+			"startTimeJourney": a.StartJourney.String,
+			"endTimeJourney":   a.FinishJourney.String,
+
+			"createdAt": a.CreatedAt.String,
+			"createdBy": a.CreatedBy.String,
+			"updatedAt": a.UpdatedAt.String,
+			"updatedBy": a.UpdatedBy.String,
+
+			// "sites":           sitesRes,
+			// "questionnaires":  questionnairesRes,
+			// "emailTargets":    arrEmail,
+			// "assignedAuditor": assignedAuditorRes,
 		})
 	}
 
@@ -210,6 +234,19 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 		return viewmodel.JourneyPlanVM{}, err
 	}
 
+	journeySchedule := data.JourneySchedule
+	var typeJourneySchedule string
+
+	if journeySchedule == 1 {
+		typeJourneySchedule = "daily"
+	}
+	if journeySchedule == 2 {
+		typeJourneySchedule = "weekly"
+	}
+	if journeySchedule == 3 {
+		typeJourneySchedule = "monthly"
+	}
+
 	// sitesRes := make([]viewmodel.SitesVM, 0)
 	site := data.Sites
 	arrSites := strings.Split(site, "|")
@@ -236,6 +273,12 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 	// 		UserID: arrAssignAud[i],
 	// 	})
 	// }
+	var strAssignAud string
+	if len(arrAssignAud) > 1 {
+		strAssignAud = ""
+	} else {
+		strAssignAud = strings.Join(arrAssignAud, "|")
+	}
 
 	// emailRes := make([]viewmodel.EmailTargetsVM, 0)
 	email := data.EmailTo
@@ -305,35 +348,34 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 	}
 
 	res := viewmodel.JourneyPlanVM{
-		ID:                    data.ID,
-		Code:                  data.Code,
-		JourneyName:           data.JourneyName,
-		JourneySchedule:       data.JourneySchedule,
-		DateCustom:            datesCustomToInt,
-		DaysOfWeek:            daysOfWeekToInt,
-		DateOfMonth:           datesOfMonthToInt,
-		AssignedAuditor:       arrAssignAud,
-		Sites:                 arrSites,
-		EmailTargets:          arrEmail,
-		Questionnaires:        arrQuestionnaires,
-		Activity:              activityRes,
-		Signatures:            data.Signatures,
-		RequireSelfie:         data.RequireSelfie,
-		Person:                data.Person.String,
-		CreatedAt:             data.CreatedAt.String,
-		UpdatedAt:             data.UpdatedAt.String,
-		StartTime:             data.StartJourney.String,
-		EndTime:               data.FinishJourney.String,
-		IsDueToday:            true,
-		IsDraft:               false,
-		IsMakeUp:              false,
-		TodayCompletedCount:   0,
-		CompletedCount:        0,
-		TodayScheduleCount:    1,
-		IsCompletedToday:      false,
-		IsCompletedThisPeriod: false,
-		ScheduleCount:         7,
-		IsScheduleThisPeriod:  true,
+		ID:          data.ID,
+		Code:        data.Code,
+		JourneyName: data.JourneyName,
+		// AssignedAuditor: arrAssignAud,
+		AssignedAuditor:  strAssignAud,
+		Auditors:         arrAssignAud,
+		DepartmentKey:    "",
+		Type:             typeJourneySchedule,
+		Sites:            arrSites,
+		Questionnaires:   arrQuestionnaires,
+		Signatures:       data.Signatures,
+		RequireSelfie:    data.RequireSelfie,
+		SelfieSignature:  []string{},
+		Person:           data.Person.String,
+		EmailTargets:     arrEmail,
+		StartTimeJourney: data.StartJourney.String,
+		EndTimeJourney:   data.FinishJourney.String,
+		// StartTimeJourney: "",
+		// EndTimeJourney:   "",
+		JourneySchedule: data.JourneySchedule,
+		DateCustom:      datesCustomToInt,
+		DaysOfWeek:      daysOfWeekToInt,
+		DateOfMonth:     datesOfMonthToInt,
+		Activity:        activityRes,
+		CreatedAt:       data.CreatedAt.String,
+		CreatedBy:       "",
+		UpdatedAt:       data.UpdatedAt.String,
+		UpdatedBy:       "",
 	}
 
 	return res, err

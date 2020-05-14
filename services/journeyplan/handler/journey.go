@@ -257,8 +257,8 @@ func (h *Contract) UpdateTimeJourney(w http.ResponseWriter, r *http.Request) {
 	}
 
 	JourneyID := req.JourneyID
-	StartTime := req.StartTime
-	EndTime := req.EndTime
+	StartTime := req.StartTimeJourney
+	EndTime := req.EndTimeJourney
 
 	mdl := usecase.UC{h.App}
 
@@ -409,5 +409,20 @@ func (h *Contract) UpdateInterval(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.SendSuccess(w, map[string]interface{}{}, nil)
+	return
+}
+
+func (h *Contract) GetAllCompany(w http.ResponseWriter, r *http.Request) {
+	var (
+		err error
+	)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	res, pagination, err := usecase.UC{h.App}.GetAllCompany()
+
+	h.SendSuccess(w, res, pagination)
 	return
 }

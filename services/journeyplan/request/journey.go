@@ -59,9 +59,9 @@ type EmailTo struct {
 
 // UpdateTimeJourneyRequest ...
 type UpdateTimeJourneyRequest struct {
-	JourneyID string `json:"journeyID" validate:"required"`
-	StartTime string `json:"startTime"`
-	EndTime   string `json:"endTime"`
+	JourneyID        string `json:"journeyID" validate:"required"`
+	StartTimeJourney string `json:"startTimeJourney"`
+	EndTimeJourney   string `json:"endTimeJourney"`
 }
 
 // AddTrackingTimeJourneyRequest ...
