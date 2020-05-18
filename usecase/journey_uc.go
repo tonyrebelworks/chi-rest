@@ -479,7 +479,7 @@ func (uc UC) GetReportJourney(code string) (viewmodel.ReportJourneyPlanVM, error
 		})
 	}
 
-	dataTraTi, err := model.TrackingTimeOp.GetByJourneyCode(uc.DB, "bq7e2l5hipgeufbrju5g0", "5qFKQb4kNJVFGsDBTp1NVrKojn12")
+	dataTraTi, err := model.TrackingTimeOp.GetByJourneyCode(uc.DB, code, "")
 	if err != nil {
 		return viewmodel.ReportJourneyPlanVM{}, err
 	}

@@ -39,9 +39,31 @@ func RegisterRoutes(r *chi.Mux, app *bootstrap.App) {
 
 		//Competitor Analysis
 		r.Get("/company", h.GetAllCompany)
-		// r.Get("/company/{code}", h.GetDetailCompany)
-		// r.Post("/company", h.AddCompany)
-		// r.Put("/company/{code}", h.UpdateCompany)
+		r.Get("/company/{code}", h.GetDetailCompany)
+		r.Post("/company", h.AddCompany)
+		r.Put("/company/{code}", h.UpdateCompany)
+		r.Delete("/company/{code}", h.DeleteCompany)
 
+		//Product
+		r.Get("/product", h.GetAllProduct)
+		r.Get("/product/{code}", h.GetDetailProduct)
+		r.Post("/product", h.AddProduct)
+		r.Put("/product/{code}", h.UpdateProduct)
+		r.Delete("/product/{code}", h.DeleteProduct)
+
+		//Promotion
+		r.Get("/promotion", h.GetAllPromotion)
+		r.Get("/promotion/{code}", h.GetDetailPromotion)
+		r.Post("/promotion", h.AddPromotion)
+		r.Put("/promotion/{code}", h.UpdatePromotion)
+		r.Delete("/promotion/{code}", h.DeletePromotion)
+
+		//Category
+		r.Get("/category", h.GetAllCategory)
+		r.Post("/category", h.AddCategory)
+		r.Delete("/category/{code}", h.DeleteCategory)
+
+		// //Export
+		// r.Get("/export", h.SearchExport)
 	})
 }
