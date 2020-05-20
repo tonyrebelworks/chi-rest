@@ -63,7 +63,12 @@ func RegisterRoutes(r *chi.Mux, app *bootstrap.App) {
 		r.Post("/category", h.AddCategory)
 		r.Delete("/category/{code}", h.DeleteCategory)
 
-		// //Export
-		// r.Get("/export", h.SearchExport)
+		//Export
+		r.Get("/export", h.SearchExport)
+
+		//Download
+		r.Get("/download", h.GetAllDownload)
+		r.Post("/download", h.AddDownload)
+		r.Delete("/download/{code}", h.DeleteDownload)
 	})
 }

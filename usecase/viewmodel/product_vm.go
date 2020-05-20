@@ -4,7 +4,6 @@ package viewmodel
 type ProductVM struct {
 	ID                 uint              ` json:"id"`
 	Code               string            ` json:"code"`
-	CompanyCode        string            ` json:"companyCode"`
 	ProductName        string            ` json:"name"`
 	ProductImage       string            ` json:"image"`
 	ProductDescription string            ` json:"description"`
@@ -15,17 +14,18 @@ type ProductVM struct {
 	Notes              string            ` json:"notes"`
 	Company            ProductCompanyVM  ` json:"company"`
 	CreatedAt          string            ` json:"createdAt"`
-	UpdatedAt          string            ` json:"updatedAt"`
+	// CompanyCode        string            ` json:"companyCode"`
+	// UpdatedAt          string            ` json:"updatedAt"`
 }
 
 // ProductCategoryVM ...
 type ProductCategoryVM struct {
-	ID           uint   ` json:"id"`
+	Code         string ` json:"code"`
 	CategoryName string ` json:"categoryName"`
 }
 
 // ProductCompanyVM ...
 type ProductCompanyVM struct {
-	ID          string ` json:"id"`
+	Code        string ` json:"code"`
 	CompanyName string ` json:"companyName"`
 }

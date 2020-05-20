@@ -143,3 +143,13 @@ func (op *promotionOp) DeletePromotion(
 	_, err := db.Exec(sql, deletedAt, code)
 	return r, err
 }
+
+// GetPromotionByDate ...
+func (op *promotionOp) GetPromotionByDate(db *sqlx.DB, startFrom string, endTo string) ([]PromotionEntity, error) {
+	var err error
+
+	res := []PromotionEntity{}
+	err = db.Select(&res, "SELECT * FROM company_promotion WHERE deleted_at IS NULL AND created_at BETWEEN ? AND ?", startFrom, endTo)
+
+	return res, err
+}

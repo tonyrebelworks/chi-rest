@@ -7,7 +7,7 @@ type JourneyPlanVM struct {
 	JourneyName     string   ` json:"journeyName"`
 	AssignedAuditor string   ` json:"assignedAuditor"`
 	Auditors        []string ` json:"auditors"`
-	DepartmentKey   string   ` json:"departmentKey"`
+	DepartmentKey   string   ` json:"departmentID"`
 	Type            string   ` json:"type"`
 	// Sites                 []SitesVM           ` json:"sites"`
 	Sites []string ` json:"sites"`
@@ -173,6 +173,7 @@ type ReportJourneyPlanVM struct {
 	ID              uint                ` json:"id"`
 	Code            string              ` json:"code"`
 	JourneyName     string              ` json:"journeyName"`
+	DepartmentKey   string              ` json:"departmentID"`
 	JourneySchedule int                 ` json:"journeySchedule"`
 	DateCustom      []int               ` json:"dateCustom"`
 	DaysOfWeek      []int               ` json:"daysOfWeek"`

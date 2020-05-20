@@ -3,6 +3,7 @@ package request
 // AddJourneyRequest ...
 type AddJourneyRequest struct {
 	JourneyName     string            `json:"journeyName" validate:"required"`
+	DepartmentKey   string            `json:"departmentID" validate:"required"`
 	JourneySchedule int64             `json:"journeySchedule" validate:"required"`
 	AssignedAuditor []AssignedAuditor `json:"assignedAuditor" validate:"required"`
 	Sites           []Sites           `json:"sites" validate:"required"`
@@ -12,7 +13,7 @@ type AddJourneyRequest struct {
 	DatesCustom     []DatesCustom     `json:"datesCustom" `
 	DaysOfWeek      []DaysOfWeek      `json:"daysOfWeek" `
 	DatesOfMonth    []DatesOfMonth    `json:"datesOfMonth"`
-	EmailTo         []EmailTo         `json:"emailTo" validate:"required"`
+	EmailTo         []EmailTo         `json:"emailTo"`
 	Person          string            `json:"person"`
 	StartJourney    string            `json:"startJourney"`
 	FinishJourney   string            `json:"finishJourney"`
@@ -22,19 +23,24 @@ type AddJourneyRequest struct {
 
 // UpdateJourneyRequest ...
 type UpdateJourneyRequest struct {
-	JourneyName     string `json:"journeyName" validate:"required"`
-	JourneySchedule int64  `json:"journeySchedule" validate:"required"`
-	Salesman        string `json:"salesman" validate:"required"`
-	Sites           string `json:"sites" validate:"required"`
-	Questionnaires  string `json:"questionnaires" validate:"required"`
-	Signatures      int64  `json:"signatures" validate:"required"`
-	RequireSelfie   int64  `json:"requireSelfie" validate:"required"`
-	EmailTo         string `json:"emailTo" validate:"required"`
-	Activity        string `json:"activity" validate:"required"`
-	StartJourney    string `json:"startJourney"`
-	FinishJourney   string `json:"finishJourney"`
-	CreatedAt       string `json:"createdAt"`
-	UpdatedAt       string `json:"updatedAt"`
+	JourneyName     string            `json:"journeyName" validate:"required"`
+	DepartmentKey   string            `json:"departmentID" validate:"required"`
+	JourneySchedule int64             `json:"journeySchedule" validate:"required"`
+	AssignedAuditor []AssignedAuditor `json:"assignedAuditor" validate:"required"`
+	Sites           []Sites           `json:"sites" validate:"required"`
+	Questionnaires  []Questionnaires  `json:"questionnaires" validate:"required"`
+	Signatures      int64             `json:"signatures" validate:"required"`
+	RequireSelfie   int64             `json:"requireSelfie" validate:"required"`
+	Person          string            `json:"person"`
+	DatesCustom     []DatesCustom     `json:"datesCustom" `
+	DaysOfWeek      []DaysOfWeek      `json:"daysOfWeek" `
+	DatesOfMonth    []DatesOfMonth    `json:"datesOfMonth"`
+	EmailTo         []EmailTo         `json:"emailTo"`
+	Activity        []string          `json:"activity"`
+	StartJourney    string            `json:"startJourney"`
+	FinishJourney   string            `json:"finishJourney"`
+	CreatedAt       string            `json:"createdAt"`
+	UpdatedAt       string            `json:"updatedAt"`
 }
 
 // AssignedAuditor ...

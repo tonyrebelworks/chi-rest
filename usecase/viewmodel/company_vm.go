@@ -15,5 +15,5 @@ type CompanyVM struct {
 	Products      []ProductVM   ` json:"products"`
 	Promotions    []PromotionVM ` json:"promotions"`
 	CreatedAt     string        ` json:"createdAt"`
-	UpdatedAt     string        ` json:"updatedAt"`
+	// UpdatedAt     string        ` json:"updatedAt"`
 }

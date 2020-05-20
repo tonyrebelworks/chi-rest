@@ -410,18 +410,106 @@ func (h *Contract) DeleteCategory(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-// //SearchExport ...
-// func (h *Contract) SearchExport(w http.ResponseWriter, r *http.Request) {
-// 	var (
-// 		err error
-// 	)
+//SearchExport ...
+func (h *Contract) SearchExport(w http.ResponseWriter, r *http.Request) {
+	var (
+		err error
+	)
 
-// 	if err != nil {
-// 		fmt.Println(err)
-// 		return
-// 	}
-// 	res, pagination, err := usecase.UC{h.App}.SearchExport()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
-// 	h.SendSuccess(w, res, pagination)
-// 	return
-// }
+	types := r.URL.Query().Get("types")
+	if types == "" {
+		h.SendBadRequest(w, "Invalid parameter")
+		return
+	}
+	startFrom := r.URL.Query().Get("start_from")
+	if types == "" {
+		h.SendBadRequest(w, "Invalid parameter")
+		return
+	}
+	endTo := r.URL.Query().Get("end_to")
+	if types == "" {
+		h.SendBadRequest(w, "Invalid parameter")
+		return
+	}
+
+	filters := map[string]string{
+		"types":      types,
+		"start_from": startFrom,
+		"end_to":     endTo,
+	}
+
+	res, pagination, err := usecase.UC{h.App}.SearchExport(filters)
+
+	h.SendSuccess(w, res, pagination)
+	return
+}
+
+// GetAllDownload ...
+func (h *Contract) GetAllDownload(w http.ResponseWriter, r *http.Request) {
+	var (
+		err error
+	)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	res, pagination, err := usecase.UC{h.App}.GetAllDownload()
+
+	h.SendSuccess(w, res, pagination)
+	return
+}
+
+// AddDownload ...
+func (h *Contract) AddDownload(w http.ResponseWriter, r *http.Request) {
+	var err error
+	req := request.AddDownloadRequest{}
+
+	if err = h.Bind(r, &req); err != nil {
+		h.SendBadRequest(w, err.Error())
+		return
+	}
+	// if err = h.Validate.Struct(req); err != nil {
+	// 	h.SendRequestValidationError(w, err.(validator.ValidationErrors))
+	// 	return
+	// }
+
+	code := xid.New().String()
+
+	lastID, err := usecase.UC{h.App}.AddDownload(
+		code,
+		req.DownloadOn,
+		req.Type,
+		req.NumberOfProductOrPromotion,
+		req.Start,
+		req.End,
+		req.URLRef,
+		req.Result,
+	)
+	if err != nil {
+		h.SendBadRequest(w, err.Error())
+		return
+	}
+
+	h.SendSuccess(w, map[string]interface{}{}, lastID)
+	return
+}
+
+// DeleteDownload ...
+func (h *Contract) DeleteDownload(w http.ResponseWriter, r *http.Request) {
+
+	code := chi.URLParam(r, "code")
+	res, err := usecase.UC{h.App}.DeleteDownload(code)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	h.SendSuccess(w, res, nil)
+	return
+}

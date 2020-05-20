@@ -131,7 +131,7 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 			"journeyName":      a.JourneyName,
 			"assignedAuditor":  strAssignAud,
 			"auditors":         arrAssignAud,
-			"departmentKey":    "",
+			"departmentID":     a.DepartmentKey,
 			"type":             typeJourneySchedule,
 			"sites":            arrSites,
 			"questionnaires":   arrQuestion,
@@ -261,7 +261,7 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 		JourneyName:      data.JourneyName,
 		AssignedAuditor:  strAssignAud,
 		Auditors:         arrAssignAud,
-		DepartmentKey:    "",
+		DepartmentKey:    data.DepartmentKey,
 		Type:             typeJourneySchedule,
 		Sites:            arrSites,
 		Questionnaires:   arrQuestionnaires,
@@ -290,6 +290,7 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 func (uc UC) StoreJourney(
 	code string,
 	journeyName string,
+	departmentKey string,
 	journeySchedule int64,
 	datesCustom []string,
 	daysOfWeek []string,
@@ -304,7 +305,7 @@ func (uc UC) StoreJourney(
 
 ) (int64, error) {
 
-	dt, err := model.JourneyOp.Store(uc.DB, code, journeyName, journeySchedule, datesCustom, daysOfWeek, datesOfMonth, salesman, sites, questionnaires, signatures, requireSelfie, person, emailTo, time.Now().UTC())
+	dt, err := model.JourneyOp.Store(uc.DB, code, journeyName, departmentKey, journeySchedule, datesCustom, daysOfWeek, datesOfMonth, salesman, sites, questionnaires, signatures, requireSelfie, person, emailTo, time.Now().UTC())
 	return dt, err
 }
 
@@ -312,17 +313,22 @@ func (uc UC) StoreJourney(
 func (uc UC) UpdateJourney(
 	code string,
 	journeyName string,
+	departmentKey string,
 	journeySchedule int64,
-	salesman string,
-	sites string,
-	questionnaires string,
+	datesCustom []string,
+	daysOfWeek []string,
+	datesOfMonth []string,
+	salesman []string,
+	sites []string,
+	questionnaires []string,
 	signatures int64,
 	requireSelfie int64,
-	emailTo string,
-	activity string,
+	person string,
+	emailTo []string,
+	// activity string,
 
 ) (int64, error) {
-	dt, err := model.JourneyOp.Update(uc.DB, code, journeyName, journeySchedule, salesman, sites, questionnaires, signatures, requireSelfie, emailTo, activity, time.Now().UTC())
+	dt, err := model.JourneyOp.Update(uc.DB, code, journeyName, departmentKey, journeySchedule, datesCustom, daysOfWeek, datesOfMonth, salesman, sites, questionnaires, signatures, requireSelfie, person, emailTo, time.Now().UTC())
 	return dt, err
 }
 
@@ -543,6 +549,7 @@ func (uc UC) GetReportJourney(code string) (viewmodel.ReportJourneyPlanVM, error
 		ID:              data.ID,
 		Code:            data.Code,
 		JourneyName:     data.JourneyName,
+		DepartmentKey:   data.DepartmentKey,
 		JourneySchedule: data.JourneySchedule,
 		DateCustom:      datesCustomToInt,
 		DaysOfWeek:      daysOfWeekToInt,

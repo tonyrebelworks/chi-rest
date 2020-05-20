@@ -20,89 +20,88 @@ func (uc UC) GetAllCompany() ([]viewmodel.CompanyVM, viewmodel.SimplePaginationV
 	}
 
 	resMap := make([]viewmodel.CompanyVM, 0)
-	for _, a := range data {
-		dataProduct, err := model.ProductOp.GetByCompanyCode(uc.DB, a.Code)
+	for _, com := range data {
+		dataProduct, err := model.ProductOp.GetByCompanyCode(uc.DB, com.Code)
 		if err != nil {
 			return nil, pagination, err
 		}
 
-		dataPromotion, err := model.PromotionOp.GetByCompanyCode(uc.DB, a.Code)
-		if err != nil {
-			return nil, pagination, err
-		}
-
-		company, err := model.CompanyOp.GetDetailCompany(uc.DB, a.Code)
+		dataPromotion, err := model.PromotionOp.GetByCompanyCode(uc.DB, com.Code)
 		if err != nil {
 			return nil, pagination, err
 		}
 
 		productRes := []viewmodel.ProductVM{}
-		for _, a := range dataProduct {
+		for _, prod := range dataProduct {
 			tempRes := viewmodel.ProductVM{
-				ID:                 a.ID,
-				Code:               a.Code,
-				CompanyCode:        a.CompanyCode,
-				ProductName:        a.ProductName,
-				ProductImage:       a.ProductImage,
-				ProductDescription: a.ProductDescription.String,
-				TargetMarket:       a.TargetMarket.String,
+				ID:                 prod.ID,
+				Code:               prod.Code,
+				ProductName:        prod.ProductName,
+				ProductImage:       prod.ProductImage,
+				ProductDescription: prod.ProductDescription.String,
+				TargetMarket:       prod.TargetMarket.String,
 				ProductCategory: viewmodel.ProductCategoryVM{
-					ID:           a.ID,
-					CategoryName: a.ProductCategory,
+					Code:         prod.Code,
+					CategoryName: prod.ProductCategory,
 				},
-				Price:   a.Price,
-				Variant: a.Variant.String,
-				Notes:   a.Notes.String,
+				Price:   prod.Price,
+				Variant: prod.Variant.String,
+				Notes:   prod.Notes.String,
 				Company: viewmodel.ProductCompanyVM{
-					ID:          a.CompanyCode,
-					CompanyName: company.CompanyName,
+					Code:        com.Code,
+					CompanyName: com.CompanyName,
 				},
+				CreatedAt: prod.CreatedAt.String,
 			}
 			productRes = append(productRes, tempRes)
 		}
 
 		promotionRes := []viewmodel.PromotionVM{}
-		for _, a := range dataPromotion {
+		for _, prom := range dataPromotion {
 			tempRes := viewmodel.PromotionVM{
-				ID:          a.ID,
-				Code:        a.Code,
-				CompanyCode: a.CompanyCode,
-				PromoTitle:  a.PromoTitle,
-				PromoImage:  a.PromoImage,
+				ID:         prom.ID,
+				Code:       prom.Code,
+				PromoTitle: prom.PromoTitle,
+				PromoImage: prom.PromoImage,
 				PromoType: viewmodel.PromoTypeVM{
-					Label: "a",
-					Value: "b",
+					Label: prom.PromoType.String,
+					Value: prom.PromoType.String,
 				},
-				DisplayLocation:   a.DisplayLocation.String,
-				PromoStart:        a.PromoStart.String,
-				PromoEnd:          a.PromoEnd.String,
-				IndefiniteEndDate: a.IndefiniteEndDate.Int64,
-				PromoDetail:       a.PromoDetail.String,
+				DisplayLocation:   prom.DisplayLocation.String,
+				PromoStart:        prom.PromoStart.String,
+				PromoEnd:          prom.PromoEnd.String,
+				IndefiniteEndDate: prom.IndefiniteEndDate.Int64,
+				PromoDetail:       prom.PromoDetail.String,
+				Company: viewmodel.PromoCompanyVM{
+					Code:        com.Code,
+					CompanyName: com.CompanyName,
+				},
+				CreatedAt: prom.CreatedAt.String,
 			}
 			promotionRes = append(promotionRes, tempRes)
 		}
 
-		strength := a.Strength
+		strength := com.Strength
 		arrStrength := strings.Split(strength, "|")
 
-		weak := a.Weakness
+		weak := com.Weakness
 		arrWeak := strings.Split(weak, "|")
 
 		resMap = append(resMap, viewmodel.CompanyVM{
-			ID:            a.ID,
-			Code:          a.Code,
-			CompanyName:   a.CompanyName,
-			Logo:          a.Logo,
-			Description:   a.Description,
-			Website:       a.Website,
-			Established:   a.Established,
-			NoOfEmployees: a.NoOfEmployees,
+			ID:            com.ID,
+			Code:          com.Code,
+			CompanyName:   com.CompanyName,
+			Logo:          com.Logo,
+			Description:   com.Description,
+			Website:       com.Website,
+			Established:   com.Established,
+			NoOfEmployees: com.NoOfEmployees,
 			Strength:      arrStrength,
 			Weakness:      arrWeak,
 			Products:      productRes,
 			Promotions:    promotionRes,
-			CreatedAt:     a.CreatedAt.String,
-			UpdatedAt:     a.UpdatedAt.String,
+			CreatedAt:     com.CreatedAt.String,
+			// UpdatedAt:     com.UpdatedAt.String,
 		})
 	}
 
@@ -112,94 +111,92 @@ func (uc UC) GetAllCompany() ([]viewmodel.CompanyVM, viewmodel.SimplePaginationV
 // GetDetailCompany ...
 func (uc UC) GetDetailCompany(code string) (viewmodel.CompanyVM, error) {
 
-	data, err := model.CompanyOp.GetDetailCompany(uc.DB, code)
+	com, err := model.CompanyOp.GetDetailCompany(uc.DB, code)
 	if err != nil {
 		return viewmodel.CompanyVM{}, err
 	}
 
-	dataProduct, err := model.ProductOp.GetByCompanyCode(uc.DB, data.Code)
+	dataProduct, err := model.ProductOp.GetByCompanyCode(uc.DB, com.Code)
 	if err != nil {
 		return viewmodel.CompanyVM{}, err
 	}
 
-	dataPromotion, err := model.PromotionOp.GetByCompanyCode(uc.DB, data.Code)
-	if err != nil {
-		return viewmodel.CompanyVM{}, err
-	}
-
-	company, err := model.CompanyOp.GetDetailCompany(uc.DB, data.Code)
+	dataPromotion, err := model.PromotionOp.GetByCompanyCode(uc.DB, com.Code)
 	if err != nil {
 		return viewmodel.CompanyVM{}, err
 	}
 
 	productRes := []viewmodel.ProductVM{}
-	for _, a := range dataProduct {
+	for _, prod := range dataProduct {
 		tempRes := viewmodel.ProductVM{
-			ID:                 a.ID,
-			Code:               a.Code,
-			CompanyCode:        a.CompanyCode,
-			ProductName:        a.ProductName,
-			ProductImage:       a.ProductImage,
-			ProductDescription: a.ProductDescription.String,
-			TargetMarket:       a.TargetMarket.String,
+			ID:                 prod.ID,
+			Code:               prod.Code,
+			ProductName:        prod.ProductName,
+			ProductImage:       prod.ProductImage,
+			ProductDescription: prod.ProductDescription.String,
+			TargetMarket:       prod.TargetMarket.String,
 			ProductCategory: viewmodel.ProductCategoryVM{
-				ID:           a.ID,
-				CategoryName: a.ProductCategory,
+				Code:         prod.Code,
+				CategoryName: prod.ProductCategory,
 			},
-			Price:   a.Price,
-			Variant: a.Variant.String,
-			Notes:   a.Notes.String,
+			Price:   prod.Price,
+			Variant: prod.Variant.String,
+			Notes:   prod.Notes.String,
 			Company: viewmodel.ProductCompanyVM{
-				ID:          a.CompanyCode,
-				CompanyName: company.CompanyName,
+				Code:        com.Code,
+				CompanyName: com.CompanyName,
 			},
-			CreatedAt: a.CreatedAt.String,
+			CreatedAt: prod.CreatedAt.String,
 		}
 		productRes = append(productRes, tempRes)
 	}
 
 	promotionRes := []viewmodel.PromotionVM{}
-	for _, a := range dataPromotion {
+	for _, prom := range dataPromotion {
 		tempRes := viewmodel.PromotionVM{
-			ID:          a.ID,
-			Code:        a.Code,
-			CompanyCode: a.CompanyCode,
-			PromoTitle:  a.PromoTitle,
-			PromoImage:  a.PromoImage,
+			ID:         prom.ID,
+			Code:       prom.Code,
+			PromoTitle: prom.PromoTitle,
+			PromoImage: prom.PromoImage,
 			PromoType: viewmodel.PromoTypeVM{
-				Label: "a",
-				Value: "b",
+				Label: prom.PromoType.String,
+				Value: prom.PromoType.String,
 			},
-			DisplayLocation:   a.DisplayLocation.String,
-			PromoStart:        a.PromoStart.String,
-			PromoEnd:          a.PromoEnd.String,
-			IndefiniteEndDate: a.IndefiniteEndDate.Int64,
-			PromoDetail:       a.PromoDetail.String,
+			DisplayLocation:   prom.DisplayLocation.String,
+			PromoStart:        prom.PromoStart.String,
+			PromoEnd:          prom.PromoEnd.String,
+			IndefiniteEndDate: prom.IndefiniteEndDate.Int64,
+			PromoDetail:       prom.PromoDetail.String,
+			Company: viewmodel.PromoCompanyVM{
+				Code:        com.Code,
+				CompanyName: com.CompanyName,
+			},
+			CreatedAt: prom.CreatedAt.String,
 		}
 		promotionRes = append(promotionRes, tempRes)
 	}
 
-	strength := data.Strength
+	strength := com.Strength
 	arrStrength := strings.Split(strength, "|")
 
-	weak := data.Weakness
+	weak := com.Weakness
 	arrWeak := strings.Split(weak, "|")
 
 	res := viewmodel.CompanyVM{
-		ID:            data.ID,
-		Code:          data.Code,
-		CompanyName:   data.CompanyName,
-		Logo:          data.Logo,
-		Description:   data.Description,
-		Website:       data.Website,
-		Established:   data.Established,
-		NoOfEmployees: data.NoOfEmployees,
+		ID:            com.ID,
+		Code:          com.Code,
+		CompanyName:   com.CompanyName,
+		Logo:          com.Logo,
+		Description:   com.Description,
+		Website:       com.Website,
+		Established:   com.Established,
+		NoOfEmployees: com.NoOfEmployees,
 		Strength:      arrStrength,
 		Weakness:      arrWeak,
 		Products:      productRes,
 		Promotions:    promotionRes,
-		CreatedAt:     data.CreatedAt.String,
-		UpdatedAt:     data.UpdatedAt.String,
+		CreatedAt:     com.CreatedAt.String,
+		// UpdatedAt:     data.UpdatedAt.String,
 	}
 
 	return res, err
@@ -253,46 +250,43 @@ func (uc UC) GetAllProduct() ([]viewmodel.ProductVM, viewmodel.SimplePaginationV
 		pagination viewmodel.SimplePaginationVM
 	)
 
-	data, err := model.ProductOp.GetAllProduct(uc.DB)
-
+	dataProduct, err := model.ProductOp.GetAllProduct(uc.DB)
 	if err != nil {
 		return nil, pagination, err
 	}
 
 	resMap := make([]viewmodel.ProductVM, 0)
-	for _, a := range data {
+	for _, prod := range dataProduct {
 
-		company, err := model.CompanyOp.GetDetailCompany(uc.DB, a.CompanyCode)
+		company, err := model.CompanyOp.GetDetailCompany(uc.DB, prod.CompanyCode)
 		if err != nil {
 			return nil, pagination, err
 		}
 
-		category, err := model.CategoryOp.GetByCode(uc.DB, a.ProductCategory)
+		category, err := model.CategoryOp.GetByCode(uc.DB, prod.ProductCategory)
 		if err != nil {
 			return nil, pagination, err
 		}
 
 		resMap = append(resMap, viewmodel.ProductVM{
-			ID:                 a.ID,
-			Code:               a.Code,
-			CompanyCode:        a.CompanyCode,
-			ProductName:        a.ProductName,
-			ProductImage:       a.ProductImage,
-			ProductDescription: a.ProductDescription.String,
-			TargetMarket:       a.TargetMarket.String,
+			ID:                 prod.ID,
+			Code:               prod.Code,
+			ProductName:        prod.ProductName,
+			ProductImage:       prod.ProductImage,
+			ProductDescription: prod.ProductDescription.String,
+			TargetMarket:       prod.TargetMarket.String,
 			ProductCategory: viewmodel.ProductCategoryVM{
-				ID:           category.ID,
+				Code:         category.Code,
 				CategoryName: category.CategoryName,
 			},
-			Price:   a.Price,
-			Variant: a.Variant.String,
-			Notes:   a.Notes.String,
+			Price:   prod.Price,
+			Variant: prod.Variant.String,
+			Notes:   prod.Notes.String,
 			Company: viewmodel.ProductCompanyVM{
-				ID:          a.CompanyCode,
+				Code:        company.Code,
 				CompanyName: company.CompanyName,
 			},
-			CreatedAt: a.CreatedAt.String,
-			UpdatedAt: a.UpdatedAt.String,
+			CreatedAt: prod.CreatedAt.String,
 		})
 	}
 
@@ -311,27 +305,31 @@ func (uc UC) GetDetailProduct(code string) (viewmodel.ProductVM, error) {
 	if err != nil {
 		return viewmodel.ProductVM{}, err
 	}
+
+	category, err := model.CategoryOp.GetByCode(uc.DB, data.ProductCategory)
+	if err != nil {
+		return viewmodel.ProductVM{}, err
+	}
+
 	res := viewmodel.ProductVM{
 		ID:                 data.ID,
 		Code:               data.Code,
-		CompanyCode:        data.CompanyCode,
 		ProductName:        data.ProductName,
 		ProductImage:       data.ProductImage,
 		ProductDescription: data.ProductDescription.String,
 		TargetMarket:       data.TargetMarket.String,
 		ProductCategory: viewmodel.ProductCategoryVM{
-			ID:           data.ID,
-			CategoryName: data.ProductCategory,
+			Code:         category.Code,
+			CategoryName: category.CategoryName,
 		},
 		Price:   data.Price,
 		Variant: data.Variant.String,
 		Notes:   data.Notes.String,
 		Company: viewmodel.ProductCompanyVM{
-			ID:          data.CompanyCode,
+			Code:        company.Code,
 			CompanyName: company.CompanyName,
 		},
 		CreatedAt: data.CreatedAt.String,
-		UpdatedAt: data.UpdatedAt.String,
 	}
 
 	return res, err
@@ -394,29 +392,35 @@ func (uc UC) GetAllPromotion() ([]viewmodel.PromotionVM, viewmodel.SimplePaginat
 	}
 
 	resMap := make([]viewmodel.PromotionVM, 0)
-	for _, a := range data {
+	for _, prom := range data {
+		if err != nil {
+			return nil, pagination, err
+		}
 
+		company, err := model.CompanyOp.GetDetailCompany(uc.DB, prom.CompanyCode)
 		if err != nil {
 			return nil, pagination, err
 		}
 
 		resMap = append(resMap, viewmodel.PromotionVM{
-			ID:          a.ID,
-			Code:        a.Code,
-			CompanyCode: a.CompanyCode,
-			PromoTitle:  a.PromoTitle,
-			PromoImage:  a.PromoImage,
+			ID:         prom.ID,
+			Code:       prom.Code,
+			PromoTitle: prom.PromoTitle,
+			PromoImage: prom.PromoImage,
 			PromoType: viewmodel.PromoTypeVM{
-				Label: "a",
-				Value: "b",
+				Label: prom.PromoType.String,
+				Value: prom.PromoType.String,
 			},
-			DisplayLocation:   a.DisplayLocation.String,
-			PromoStart:        a.PromoStart.String,
-			PromoEnd:          a.PromoEnd.String,
-			IndefiniteEndDate: a.IndefiniteEndDate.Int64,
-			PromoDetail:       a.PromoDetail.String,
-			CreatedAt:         a.CreatedAt.String,
-			UpdatedAt:         a.UpdatedAt.String,
+			DisplayLocation:   prom.DisplayLocation.String,
+			PromoStart:        prom.PromoStart.String,
+			PromoEnd:          prom.PromoEnd.String,
+			IndefiniteEndDate: prom.IndefiniteEndDate.Int64,
+			PromoDetail:       prom.PromoDetail.String,
+			CreatedAt:         prom.CreatedAt.String,
+			Company: viewmodel.PromoCompanyVM{
+				Code:        company.Code,
+				CompanyName: company.CompanyName,
+			},
 		})
 	}
 
@@ -431,15 +435,19 @@ func (uc UC) GetDetailPromotion(code string) (viewmodel.PromotionVM, error) {
 		return viewmodel.PromotionVM{}, err
 	}
 
+	company, err := model.CompanyOp.GetDetailCompany(uc.DB, data.CompanyCode)
+	if err != nil {
+		return viewmodel.PromotionVM{}, err
+	}
+
 	res := viewmodel.PromotionVM{
-		ID:          data.ID,
-		Code:        data.Code,
-		CompanyCode: data.CompanyCode,
-		PromoTitle:  data.PromoTitle,
-		PromoImage:  data.PromoImage,
+		ID:         data.ID,
+		Code:       data.Code,
+		PromoTitle: data.PromoTitle,
+		PromoImage: data.PromoImage,
 		PromoType: viewmodel.PromoTypeVM{
-			Label: "a",
-			Value: "b",
+			Label: data.PromoType.String,
+			Value: data.PromoType.String,
 		},
 		DisplayLocation:   data.DisplayLocation.String,
 		PromoStart:        data.PromoStart.String,
@@ -447,7 +455,10 @@ func (uc UC) GetDetailPromotion(code string) (viewmodel.PromotionVM, error) {
 		IndefiniteEndDate: data.IndefiniteEndDate.Int64,
 		PromoDetail:       data.PromoDetail.String,
 		CreatedAt:         data.CreatedAt.String,
-		UpdatedAt:         data.UpdatedAt.String,
+		Company: viewmodel.PromoCompanyVM{
+			Code:        company.Code,
+			CompanyName: company.CompanyName,
+		},
 	}
 
 	return res, err
@@ -546,43 +557,248 @@ func (uc UC) DeleteCategory(code string) ([]*model.CategoryEntity, error) {
 }
 
 // SearchExport ...
-func (uc UC) SearchExport() ([]viewmodel.ProductVM, viewmodel.SimplePaginationVM, error) {
+func (uc UC) SearchExport(filters map[string]string) ([]map[string]interface{}, viewmodel.SimplePaginationVM, error) {
 	var (
 		pagination viewmodel.SimplePaginationVM
 	)
 
-	data, err := model.ProductOp.GetAllProduct(uc.DB)
+	types := filters["types"]
+	startFrom := filters["start_from"]
+	endTo := filters["end_to"]
+
+	if types == "product" {
+		dataProduct, err := model.ProductOp.GetProductByDate(uc.DB, startFrom, endTo)
+		if err != nil {
+			return nil, pagination, err
+		}
+
+		resMap := make([]map[string]interface{}, 0)
+		for _, prod := range dataProduct {
+
+			if err != nil {
+				return nil, pagination, err
+			}
+
+			companyProd, err := model.CompanyOp.GetDetailCompany(uc.DB, prod.CompanyCode)
+			if err != nil {
+				return nil, pagination, err
+			}
+
+			categoryProd, err := model.CategoryOp.GetByCode(uc.DB, prod.ProductCategory)
+			if err != nil {
+				return nil, pagination, err
+			}
+
+			resMap = append(resMap, map[string]interface{}{
+				"id":   prod.ID,
+				"type": "product",
+				"code": prod.Code,
+				"company": viewmodel.ProductCompanyVM{
+					Code:        companyProd.Code,
+					CompanyName: companyProd.CompanyName,
+				},
+				"name":         prod.ProductName,
+				"image":        prod.ProductImage,
+				"description":  prod.ProductDescription.String,
+				"targetMarket": prod.TargetMarket.String,
+				"category": viewmodel.ProductCategoryVM{
+					Code:         categoryProd.Code,
+					CategoryName: categoryProd.CategoryName,
+				},
+				"price":     prod.Price,
+				"variant":   prod.Variant.String,
+				"notes":     prod.Notes.String,
+				"createdAt": prod.CreatedAt.String,
+			})
+		}
+
+		return resMap, pagination, err
+	} else {
+		dataPromotion, err := model.PromotionOp.GetPromotionByDate(uc.DB, startFrom, endTo)
+		if err != nil {
+			return nil, pagination, err
+		}
+
+		resMap := make([]map[string]interface{}, 0)
+		for _, prom := range dataPromotion {
+
+			if err != nil {
+				return nil, pagination, err
+			}
+
+			companyPromotion, err := model.CompanyOp.GetDetailCompany(uc.DB, prom.CompanyCode)
+			if err != nil {
+				return nil, pagination, err
+			}
+
+			resMap = append(resMap, map[string]interface{}{
+				"id":    prom.ID,
+				"type":  "promotion",
+				"code":  prom.Code,
+				"title": prom.PromoTitle,
+				"image": prom.PromoImage,
+				"promoType": viewmodel.PromoTypeVM{
+					Label: prom.PromoType.String,
+					Value: prom.PromoType.String,
+				},
+				"displayLocation":   prom.DisplayLocation.String,
+				"start":             prom.PromoStart.String,
+				"end":               prom.PromoEnd.String,
+				"indefiniteEndDate": prom.IndefiniteEndDate.Int64,
+				"detail":            prom.PromoDetail.String,
+				"company": viewmodel.PromoCompanyVM{
+					Code:        companyPromotion.Code,
+					CompanyName: companyPromotion.CompanyName,
+				},
+				"createdAt": prom.CreatedAt.String,
+			})
+		}
+
+		return resMap, pagination, err
+	}
+
+}
+
+// GetAllDownload ...
+func (uc UC) GetAllDownload() ([]viewmodel.DownloadVM, viewmodel.SimplePaginationVM, error) {
+	var (
+		pagination viewmodel.SimplePaginationVM
+	)
+
+	data, err := model.DownloadOp.GetAllDownload(uc.DB)
 
 	if err != nil {
 		return nil, pagination, err
 	}
 
-	resMap := make([]viewmodel.ProductVM, 0)
+	resMap := make([]viewmodel.DownloadVM, 0)
 	for _, a := range data {
 
 		if err != nil {
 			return nil, pagination, err
 		}
 
-		resMap = append(resMap, viewmodel.ProductVM{
-			ID:                 a.ID,
-			Code:               a.Code,
-			CompanyCode:        a.CompanyCode,
-			ProductName:        a.ProductName,
-			ProductImage:       a.ProductImage,
-			ProductDescription: a.ProductDescription.String,
-			TargetMarket:       a.TargetMarket.String,
-			ProductCategory: viewmodel.ProductCategoryVM{
-				ID:           a.ID,
-				CategoryName: a.ProductCategory,
+		resu := a.Result
+		arrResu := strings.Split(resu, "|")
+
+		viewResult := make([]map[string]interface{}, 0)
+
+		if a.Type.String == "product" {
+
+			for i := range arrResu {
+				dataProduct, err := model.ProductOp.GetDetailProduct(uc.DB, arrResu[i])
+				if err != nil {
+					return nil, pagination, err
+				}
+
+				category, err := model.CategoryOp.GetByCode(uc.DB, dataProduct.ProductCategory)
+				if err != nil {
+					return nil, pagination, err
+				}
+
+				company, err := model.CompanyOp.GetDetailCompany(uc.DB, dataProduct.CompanyCode)
+				if err != nil {
+					return nil, pagination, err
+				}
+
+				viewResult = append(viewResult, map[string]interface{}{
+					"id":           dataProduct.ID,
+					"code":         dataProduct.Code,
+					"name":         dataProduct.ProductName,
+					"image":        dataProduct.ProductImage,
+					"description":  dataProduct.ProductDescription.String,
+					"targetMarket": dataProduct.TargetMarket.String,
+					"category": viewmodel.ProductCategoryVM{
+						Code:         category.Code,
+						CategoryName: category.CategoryName,
+					},
+					"price":   dataProduct.Price,
+					"variant": dataProduct.Variant.String,
+					"notes":   dataProduct.Notes.String,
+					"company": viewmodel.ProductCompanyVM{
+						Code:        company.Code,
+						CompanyName: company.CompanyName,
+					},
+					"createdAt": dataProduct.CreatedAt.String,
+				})
+
+			}
+		} else {
+			for i := range arrResu {
+				dataPromotion, err := model.PromotionOp.GetDetailPromotion(uc.DB, arrResu[i])
+				if err != nil {
+					return nil, pagination, err
+				}
+
+				company, err := model.CompanyOp.GetDetailCompany(uc.DB, dataPromotion.CompanyCode)
+				if err != nil {
+					return nil, pagination, err
+				}
+
+				viewResult = append(viewResult, map[string]interface{}{
+					"id":    dataPromotion.ID,
+					"code":  dataPromotion.Code,
+					"title": dataPromotion.PromoTitle,
+					"image": dataPromotion.PromoImage,
+					"type": viewmodel.PromoTypeVM{
+						Label: dataPromotion.PromoType.String,
+						Value: dataPromotion.PromoType.String,
+					},
+					"displayLocation":   dataPromotion.DisplayLocation.String,
+					"start":             dataPromotion.PromoStart.String,
+					"end":               dataPromotion.PromoEnd.String,
+					"indefiniteEndDate": dataPromotion.IndefiniteEndDate.Int64,
+					"detail":            dataPromotion.PromoDetail.String,
+					"createdAt":         dataPromotion.CreatedAt.String,
+					"company": viewmodel.PromoCompanyVM{
+						Code:        company.Code,
+						CompanyName: company.CompanyName,
+					},
+				})
+
+			}
+
+		}
+
+		resMap = append(resMap, viewmodel.DownloadVM{
+			ID:                         a.ID,
+			Code:                       a.Code,
+			DownloadOn:                 a.DownloadOn.String,
+			Type:                       a.Type.String,
+			NumberOfProductOrPromotion: a.NumberOfProductOrPromotion.String,
+			Date: viewmodel.DateVM{
+				Start: a.Start.String,
+				End:   a.End.String,
 			},
-			Price:     a.Price,
-			Variant:   a.Variant.String,
-			Notes:     a.Notes.String,
+			URLRef:    a.URLRef.String,
+			Result:    viewResult,
 			CreatedAt: a.CreatedAt.String,
-			UpdatedAt: a.UpdatedAt.String,
 		})
 	}
 
 	return resMap, pagination, err
+}
+
+// AddDownload ...
+func (uc UC) AddDownload(
+	code string,
+	downloadOn string,
+	types string,
+	numberOfProductOrPromotion int,
+	start string,
+	end string,
+	urlRef string,
+	result string,
+
+) (int64, error) {
+
+	dt, err := model.DownloadOp.StoreDownload(uc.DB, code, downloadOn, types, numberOfProductOrPromotion, start, end, urlRef, result, time.Now().UTC())
+	return dt, err
+}
+
+// DeleteDownload ...
+func (uc UC) DeleteDownload(code string) ([]*model.DownloadEntity, error) {
+
+	dt, err := model.DownloadOp.DeleteDownload(uc.DB, code, time.Now().UTC())
+	return dt, err
 }

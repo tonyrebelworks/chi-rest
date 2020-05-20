@@ -87,6 +87,7 @@ func (h *Contract) AddJourney(w http.ResponseWriter, r *http.Request) {
 	code := xid.New().String()
 
 	JourneyName := req.JourneyName
+	DepartmentKey := req.DepartmentKey
 	JourneySchedule := req.JourneySchedule
 
 	if len(req.AssignedAuditor) > 0 {
@@ -152,6 +153,7 @@ func (h *Contract) AddJourney(w http.ResponseWriter, r *http.Request) {
 	lastID, err := usecase.UC{h.App}.StoreJourney(
 		code,
 		JourneyName,
+		DepartmentKey,
 		JourneySchedule,
 		datesCustom,
 		daysOfWeek,
@@ -184,14 +186,66 @@ func (h *Contract) UpdateJourney(w http.ResponseWriter, r *http.Request) {
 	}
 
 	JourneyName := req.JourneyName
+	DepartmentKey := req.DepartmentKey
 	JourneySchedule := req.JourneySchedule
-	Salesman := req.Salesman
-	Sites := req.Sites
-	Questionnaires := req.Questionnaires
+
+	assignedAuditors := make([]string, 0)
+	for _, aa := range req.AssignedAuditor {
+		assignedAuditors = append(assignedAuditors, aa.UserID)
+	}
+
+	if len(req.Sites) > 0 {
+
+	}
+	sitess := make([]string, 0)
+	for _, si := range req.Sites {
+		sitess = append(sitess, si.SiteID)
+	}
+
+	if len(req.Questionnaires) > 0 {
+
+	}
+	questionnairess := make([]string, 0)
+	for _, qu := range req.Questionnaires {
+		questionnairess = append(questionnairess, qu.QuestionnaireID)
+	}
+
+	if len(req.EmailTo) > 0 {
+
+	}
+	emails := make([]string, 0)
+	for _, em := range req.EmailTo {
+		emails = append(emails, em.Email)
+	}
+
+	if len(req.DatesCustom) > 0 {
+
+	}
+	datesCustom := make([]string, 0)
+	for _, dc := range req.DatesCustom {
+		datesCustom = append(datesCustom, dc.DatesCustom)
+	}
+
+	if len(req.DaysOfWeek) > 0 {
+
+	}
+	daysOfWeek := make([]string, 0)
+	for _, dow := range req.DaysOfWeek {
+		daysOfWeek = append(daysOfWeek, dow.DaysOfWeek)
+	}
+
+	if len(req.DatesOfMonth) > 0 {
+
+	}
+	datesOfMonth := make([]string, 0)
+	for _, dom := range req.DatesOfMonth {
+		datesOfMonth = append(datesOfMonth, dom.DateOfMonth)
+	}
+	// Activity := req.Activity
+
 	Signatures := req.Signatures
 	RequireSelfie := req.RequireSelfie
-	EmailTo := req.EmailTo
-	Activity := req.Activity
+	Person := req.Person
 
 	code := chi.URLParam(r, "code")
 	mdl := usecase.UC{h.App}
@@ -199,14 +253,19 @@ func (h *Contract) UpdateJourney(w http.ResponseWriter, r *http.Request) {
 	_, err = mdl.UpdateJourney(
 		code,
 		JourneyName,
+		DepartmentKey,
 		JourneySchedule,
-		Salesman,
-		Sites,
-		Questionnaires,
+		datesCustom,
+		daysOfWeek,
+		datesOfMonth,
+		assignedAuditors,
+		sitess,
+		questionnairess,
 		Signatures,
 		RequireSelfie,
-		EmailTo,
-		Activity,
+		Person,
+		emails,
+		// Activity,
 	)
 	if err != nil {
 		h.SendBadRequest(w, err.Error())

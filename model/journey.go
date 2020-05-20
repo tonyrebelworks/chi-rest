@@ -13,6 +13,7 @@ type JourneyEntity struct {
 	ID              uint           `db:"id" json:"id"`
 	Code            string         `db:"code" json:"code"`
 	JourneyName     string         `db:"journey_name" json:"journeyName"`
+	DepartmentKey   string         `db:"department_key" json:"departmentKey"`
 	JourneySchedule int            `db:"journey_schedule" json:"journeySchedule"`
 	DatesCustom     sql.NullString `db:"dates_custom" json:"datesCustom"`
 	DaysOfWeek      sql.NullString `db:"days_of_week" json:"daysOfWeek"`
@@ -57,7 +58,7 @@ func (op *journeyOp) GetAll(db *sqlx.DB, types string, maxID, limit int) ([]Jour
 
 	res := []JourneyEntity{}
 
-	native := "SELECT id, code, journey_name, journey_schedule, dates_custom, days_of_week, dates_of_month, salesman, sites, questionnaires, signatures, require_selfie, person, email_to, start_journey, finish_journey, created_at, updated_at FROM journey_plan "
+	native := "SELECT id, code, journey_name, department_key, journey_schedule, dates_custom, days_of_week, dates_of_month, salesman, sites, questionnaires, signatures, require_selfie, person, email_to, start_journey, finish_journey, created_at, updated_at FROM journey_plan WHERE deleted_at IS NULL"
 
 	if types == "next" {
 		// maxID = 0 detect page 1
@@ -91,7 +92,7 @@ func (op *journeyOp) GetDetail(db *sqlx.DB, code string) (JourneyEntity, error) 
 	var err error
 
 	res := JourneyEntity{}
-	err = db.Get(&res, "SELECT * FROM journey_plan WHERE code = ? LIMIT 1", code)
+	err = db.Get(&res, "SELECT id, code, journey_name, department_key, journey_schedule, dates_custom, days_of_week, dates_of_month, salesman, sites, questionnaires, signatures, require_selfie, person, email_to, start_journey, finish_journey, created_at, updated_at FROM journey_plan WHERE code = ? AND deleted_at IS NULL LIMIT 1", code)
 
 	return res, err
 }
@@ -101,6 +102,7 @@ func (op *journeyOp) Store(
 	db *sqlx.DB,
 	code string,
 	journeyName string,
+	departmentKey string,
 	journeySchedule int64,
 	datesCustom []string,
 	daysOfWeek []string,
@@ -141,8 +143,8 @@ func (op *journeyOp) Store(
 	dom := datesOfMonth
 	datesOfMonths := strings.Join(dom, ",")
 
-	var sql = "INSERT INTO journey_plan (code, journey_name, journey_schedule, dates_custom, days_of_week, dates_of_month, salesman, sites, questionnaires, signatures, require_selfie,person, email_to,created_at) VALUES ( ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-	res, err := db.Exec(sql, code, journeyName, journeySchedule, datesCustoms, daysOfWeeks, datesOfMonths, salesmans, sitess, questionnairess, signatures, requireSelfie, person, emailTos, createdAt)
+	var sql = "INSERT INTO journey_plan (code, journey_name, department_key, journey_schedule, dates_custom, days_of_week, dates_of_month, salesman, sites, questionnaires, signatures, require_selfie,person, email_to,created_at) VALUES ( ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	res, err := db.Exec(sql, code, journeyName, departmentKey, journeySchedule, datesCustoms, daysOfWeeks, datesOfMonths, salesmans, sitess, questionnairess, signatures, requireSelfie, person, emailTos, createdAt)
 	if err != nil {
 		return 0, err
 	}
@@ -160,14 +162,19 @@ func (op *journeyOp) Update(
 	db *sqlx.DB,
 	code string,
 	journeyName string,
+	departmentKey string,
 	journeySchedule int64,
-	salesman string,
-	sites string,
-	questionnaires string,
+	datesCustom []string,
+	daysOfWeek []string,
+	datesOfMonth []string,
+	salesman []string,
+	sites []string,
+	questionnaires []string,
 	signatures int64,
 	requireSelfie int64,
-	emailTo string,
-	activity string,
+	person string,
+	emailTo []string,
+	// activity string,
 	// startJourney string,
 	// finishJourney string,
 	changedAt time.Time,
@@ -176,9 +183,30 @@ func (op *journeyOp) Update(
 
 	updatedAt := changedAt.Format("2006-01-02 15:04:05")
 
-	var sql = "UPDATE journey_plan SET journey_name = ?,  journey_schedule = ?, salesman = ?, sites = ?, questionnaires = ?, signatures = ?, require_selfie = ?, email_to = ?, activity = ?, updated_at = ? WHERE code = ?"
+	s := salesman
+	salesmans := strings.Join(s, "|")
 
-	_, err := db.Exec(sql, journeyName, journeySchedule, salesman, sites, questionnaires, signatures, requireSelfie, emailTo, activity, updatedAt, code)
+	si := sites
+	sitess := strings.Join(si, "|")
+
+	qu := questionnaires
+	questionnairess := strings.Join(qu, "|")
+
+	em := emailTo
+	emailTos := strings.Join(em, "|")
+
+	dc := datesCustom
+	datesCustoms := strings.Join(dc, ",")
+
+	dow := daysOfWeek
+	daysOfWeeks := strings.Join(dow, ",")
+
+	dom := datesOfMonth
+	datesOfMonths := strings.Join(dom, ",")
+
+	var sql = "UPDATE journey_plan SET journey_name = ?, department_key = ?,  journey_schedule = ?,  dates_custom = ?,  days_of_week = ?,  dates_of_month = ?, salesman = ?, sites = ?, questionnaires = ?, signatures = ?, require_selfie = ?, person = ?, email_to = ?,  updated_at = ? WHERE code = ?"
+
+	_, err := db.Exec(sql, journeyName, departmentKey, journeySchedule, datesCustoms, daysOfWeeks, datesOfMonths, salesmans, sitess, questionnairess, signatures, requireSelfie, person, emailTos, updatedAt, code)
 	if err != nil {
 		return 0, err
 	}

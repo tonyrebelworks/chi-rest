@@ -51,7 +51,7 @@ func (op *productOp) GetDetailProduct(db *sqlx.DB, code string) (ProductEntity, 
 	var err error
 
 	res := ProductEntity{}
-	err = db.Get(&res, "SELECT * FROM company_product WHERE code = ? LIMIT 1", code)
+	err = db.Get(&res, "SELECT id, code, company_code, product_name, product_image, product_description, target_market, product_category, price, variant, notes, created_at, deleted_at FROM company_product WHERE code = ? LIMIT 1", code)
 
 	return res, err
 }
@@ -61,7 +61,7 @@ func (op *productOp) GetByCompanyCode(db *sqlx.DB, code string) ([]ProductEntity
 	var err error
 
 	res := []ProductEntity{}
-	err = db.Select(&res, "SELECT * FROM company_product WHERE company_code = ? AND deleted_at IS NULL", code)
+	err = db.Select(&res, "SELECT id, code, company_code, product_name, product_image, product_description, target_market, product_category, price, variant, notes, created_at, deleted_at FROM company_product WHERE company_code = ? AND deleted_at IS NULL", code)
 
 	return res, err
 }
@@ -142,4 +142,14 @@ func (op *productOp) DeleteProduct(
 
 	_, err := db.Exec(sql, deletedAt, code)
 	return r, err
+}
+
+// GetProductByDate ...
+func (op *productOp) GetProductByDate(db *sqlx.DB, startFrom string, endTo string) ([]ProductEntity, error) {
+	var err error
+
+	res := []ProductEntity{}
+	err = db.Select(&res, "SELECT id, code, company_code, product_name, product_image, product_description, target_market, product_category, price, variant, notes, created_at, deleted_at FROM company_product WHERE deleted_at IS NULL AND created_at BETWEEN ? AND ?", startFrom, endTo)
+
+	return res, err
 }

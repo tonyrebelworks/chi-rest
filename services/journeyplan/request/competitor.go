@@ -39,12 +39,12 @@ type AddProductRequest struct {
 
 // UpdateProductRequest ...
 type UpdateProductRequest struct {
-	CompanyCode        string ` json:"companyCode"`
-	ProductName        string ` json:"productName"`
-	ProductImage       string ` json:"productImage"`
-	ProductDescription string ` json:"productDescription"`
+	CompanyCode        string ` json:"companyID"`
+	ProductName        string ` json:"name"`
+	ProductImage       string ` json:"image"`
+	ProductDescription string ` json:"description"`
 	TargetMarket       string ` json:"targetMarket"`
-	ProductCategory    string ` json:"productCategory"`
+	ProductCategory    string ` json:"category"`
 	Price              int    ` json:"price"`
 	Variant            string ` json:"variant"`
 	Notes              string ` json:"notes"`
@@ -90,4 +90,26 @@ type AddCategoryRequest struct {
 // UpdateCategoryRequest ...
 type UpdateCategoryRequest struct {
 	CompanyCode string ` json:"companyCode" validate:"required"`
+}
+
+// AddDownloadRequest ...
+type AddDownloadRequest struct {
+	DownloadOn                 string ` json:"downloadOn"  validate:"required"`
+	Type                       string ` json:"type"`
+	NumberOfProductOrPromotion int    ` json:"numberOfProductOrPromotion"`
+	Start                      string ` json:"start"`
+	End                        string ` json:"end"`
+	URLRef                     string ` json:"urlRef"`
+	Result                     string ` json:"result"`
+}
+
+// UpdateDownloadRequest ...
+type UpdateDownloadRequest struct {
+	DownloadOn                 string ` json:"downloadOn"  validate:"required"`
+	Type                       string ` json:"type"`
+	NumberOfProductOrPromotion string ` json:"numberOfProductOrPromotion"`
+	Start                      string ` json:"start"`
+	End                        string ` json:"end"`
+	URLRef                     string ` json:"urlRef"`
+	Result                     string ` json:"result"`
 }
