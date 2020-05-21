@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-chi/chi"
 	httpSwagger "github.com/swaggo/http-swagger"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 // RegisterRoutes all routes for the apps
@@ -16,7 +17,7 @@ func RegisterRoutes(r *chi.Mux, app *bootstrap.App) {
 		httpSwagger.URL(app.Config.GetString("app.app_host")+"/swagger/doc.json"),
 	))
 
-	h := handler.Contract{app}
+	h := handler.Contract{app, validator.New()}
 	r.Route("/v1", func(r chi.Router) {
 		// r.Get("/", h.Hello)
 

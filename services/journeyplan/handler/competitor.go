@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/rs/xid"
+	validator "gopkg.in/go-playground/validator.v9"
 )
 
 //GetAllCompany
@@ -48,10 +49,10 @@ func (h *Contract) AddCompany(w http.ResponseWriter, r *http.Request) {
 		h.SendBadRequest(w, err.Error())
 		return
 	}
-	// if err = h.Validate.Struct(req); err != nil {
-	// 	h.SendRequestValidationError(w, err.(validator.ValidationErrors))
-	// 	return
-	// }
+	if err = h.Validate.Struct(req); err != nil {
+		h.SendRequestValidationError(w, err.(validator.ValidationErrors))
+		return
+	}
 
 	code := xid.New().String()
 
@@ -82,6 +83,10 @@ func (h *Contract) UpdateCompany(w http.ResponseWriter, r *http.Request) {
 	req := request.UpdateCompanyRequest{}
 	if err = h.Bind(r, &req); err != nil {
 		h.SendBadRequest(w, err.Error())
+		return
+	}
+	if err = h.Validate.Struct(req); err != nil {
+		h.SendRequestValidationError(w, err.(validator.ValidationErrors))
 		return
 	}
 
@@ -160,10 +165,10 @@ func (h *Contract) AddProduct(w http.ResponseWriter, r *http.Request) {
 		h.SendBadRequest(w, err.Error())
 		return
 	}
-	// if err = h.Validate.Struct(req); err != nil {
-	// 	h.SendRequestValidationError(w, err.(validator.ValidationErrors))
-	// 	return
-	// }
+	if err = h.Validate.Struct(req); err != nil {
+		h.SendRequestValidationError(w, err.(validator.ValidationErrors))
+		return
+	}
 
 	code := xid.New().String()
 
@@ -195,6 +200,11 @@ func (h *Contract) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	req := request.UpdateProductRequest{}
 	if err = h.Bind(r, &req); err != nil {
 		h.SendBadRequest(w, err.Error())
+		return
+	}
+
+	if err = h.Validate.Struct(req); err != nil {
+		h.SendRequestValidationError(w, err.(validator.ValidationErrors))
 		return
 	}
 
@@ -274,11 +284,10 @@ func (h *Contract) AddPromotion(w http.ResponseWriter, r *http.Request) {
 		h.SendBadRequest(w, err.Error())
 		return
 	}
-	// if err = h.Validate.Struct(req); err != nil {
-	// 	h.SendRequestValidationError(w, err.(validator.ValidationErrors))
-	// 	return
-	// }
-	fmt.Println(req.PromoType)
+	if err = h.Validate.Struct(req); err != nil {
+		h.SendRequestValidationError(w, err.(validator.ValidationErrors))
+		return
+	}
 
 	code := xid.New().String()
 
@@ -310,6 +319,10 @@ func (h *Contract) UpdatePromotion(w http.ResponseWriter, r *http.Request) {
 	req := request.UpdatePromotionRequest{}
 	if err = h.Bind(r, &req); err != nil {
 		h.SendBadRequest(w, err.Error())
+		return
+	}
+	if err = h.Validate.Struct(req); err != nil {
+		h.SendRequestValidationError(w, err.(validator.ValidationErrors))
 		return
 	}
 
@@ -376,8 +389,14 @@ func (h *Contract) AddCategory(w http.ResponseWriter, r *http.Request) {
 		h.SendBadRequest(w, err.Error())
 		return
 	}
-	// if err = h.Validate.Struct(req); err != nil {
-	// 	h.SendRequestValidationError(w, err.(validator.ValidationErrors))
+
+	if err = h.Validate.Struct(req); err != nil {
+		h.SendRequestValidationError(w, err.(validator.ValidationErrors))
+		return
+	}
+
+	// if len(req.CategoryName) < 1 {
+	// 	h.SendBadRequest(w, "Category name tidak boleh kosong.")
 	// 	return
 	// }
 
@@ -474,10 +493,10 @@ func (h *Contract) AddDownload(w http.ResponseWriter, r *http.Request) {
 		h.SendBadRequest(w, err.Error())
 		return
 	}
-	// if err = h.Validate.Struct(req); err != nil {
-	// 	h.SendRequestValidationError(w, err.(validator.ValidationErrors))
-	// 	return
-	// }
+	if err = h.Validate.Struct(req); err != nil {
+		h.SendRequestValidationError(w, err.(validator.ValidationErrors))
+		return
+	}
 
 	code := xid.New().String()
 

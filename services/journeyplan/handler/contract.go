@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
-	"strings"
 
 	"chi-rest/bootstrap"
 	"chi-rest/lib/utils"
@@ -45,6 +44,7 @@ const (
 // Contract ...
 type Contract struct {
 	*bootstrap.App
+	Validate *validator.Validate
 }
 
 // Bind bind the API request payload (body) into request struct.
@@ -80,7 +80,8 @@ func (h Contract) SendRequestValidationError(w http.ResponseWriter, validationEr
 		errKey := utils.Underscore(err.StructField())
 		errorResponse[errKey] = append(
 			errorResponse[errKey],
-			strings.Replace(errorTranslation[err.Namespace()], err.StructField(), "[]", -1),
+			// strings.Replace(errorTranslation[err.Namespace()], err.StructField(), "[]", -1),
+			errorTranslation[err.Namespace()],
 		)
 	}
 
@@ -91,9 +92,9 @@ func (h Contract) SendRequestValidationError(w http.ResponseWriter, validationEr
 func (h Contract) RespondWithJSON(w http.ResponseWriter, httpCode int, statCode string, message string, payload interface{}, pagination interface{}) {
 	respPayload := map[string]interface{}{
 		// "stat_code":  statCode,
-		"message":    message,
-		"data":       payload,
-		"pagination": pagination,
+		"message": message,
+		"data":    payload,
+		// "pagination": pagination,
 		// "type": "JSON",
 	}
 

@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/rs/xid"
+	validator "gopkg.in/go-playground/validator.v9"
 )
 
 // GetAllJourney ...
@@ -79,10 +80,10 @@ func (h *Contract) AddJourney(w http.ResponseWriter, r *http.Request) {
 		h.SendBadRequest(w, err.Error())
 		return
 	}
-	// if err = h.Validate.Struct(req); err != nil {
-	// 	h.SendRequestValidationError(w, err.(validator.ValidationErrors))
-	// 	return
-	// }
+	if err = h.Validate.Struct(req); err != nil {
+		h.SendRequestValidationError(w, err.(validator.ValidationErrors))
+		return
+	}
 
 	code := xid.New().String()
 
@@ -182,6 +183,10 @@ func (h *Contract) UpdateJourney(w http.ResponseWriter, r *http.Request) {
 	req := request.UpdateJourneyRequest{}
 	if err = h.Bind(r, &req); err != nil {
 		h.SendBadRequest(w, err.Error())
+		return
+	}
+	if err = h.Validate.Struct(req); err != nil {
+		h.SendRequestValidationError(w, err.(validator.ValidationErrors))
 		return
 	}
 
@@ -299,6 +304,10 @@ func (h *Contract) UpdateTimeJourney(w http.ResponseWriter, r *http.Request) {
 		h.SendBadRequest(w, err.Error())
 		return
 	}
+	if err = h.Validate.Struct(req); err != nil {
+		h.SendRequestValidationError(w, err.(validator.ValidationErrors))
+		return
+	}
 
 	JourneyID := req.JourneyID
 	StartTime := req.StartTimeJourney
@@ -354,10 +363,10 @@ func (h *Contract) AddTrackingTimeJourney(w http.ResponseWriter, r *http.Request
 		h.SendBadRequest(w, err.Error())
 		return
 	}
-	// if err = h.Validate.Struct(req); err != nil {
-	// 	h.SendRequestValidationError(w, err.(validator.ValidationErrors))
-	// 	return
-	// }
+	if err = h.Validate.Struct(req); err != nil {
+		h.SendRequestValidationError(w, err.(validator.ValidationErrors))
+		return
+	}
 
 	JourneyID := req.JourneyID
 	Latitude := req.Latitude
@@ -399,10 +408,10 @@ func (h *Contract) AddURLFirebase(w http.ResponseWriter, r *http.Request) {
 		h.SendBadRequest(w, err.Error())
 		return
 	}
-	// if err = h.Validate.Struct(req); err != nil {
-	// 	h.SendRequestValidationError(w, err.(validator.ValidationErrors))
-	// 	return
-	// }
+	if err = h.Validate.Struct(req); err != nil {
+		h.SendRequestValidationError(w, err.(validator.ValidationErrors))
+		return
+	}
 
 	URL := req.URL
 	JourneyID := req.JourneyID
@@ -438,6 +447,10 @@ func (h *Contract) UpdateInterval(w http.ResponseWriter, r *http.Request) {
 	req := request.UpdateInterval{}
 	if err = h.Bind(r, &req); err != nil {
 		h.SendBadRequest(w, err.Error())
+		return
+	}
+	if err = h.Validate.Struct(req); err != nil {
+		h.SendRequestValidationError(w, err.(validator.ValidationErrors))
 		return
 	}
 
