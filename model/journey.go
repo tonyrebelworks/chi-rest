@@ -39,10 +39,10 @@ type JourneyEntity struct {
 	ScheduleCount         sql.NullString `db:"schedule_count" json:"scheduleCount"`
 	IsScheduleThisPeriod  sql.NullString `db:"is_schedule_this_period" json:"isScheduleThisPeriod"`
 	CreatedAt             sql.NullString `db:"created_at" json:"createdAt"`
-	CreatedBy             sql.NullString `db:"created_by" json:"createdBy"`
 	UpdatedAt             sql.NullString `db:"updated_at" json:"updatedAt"`
-	UpdatedBy             sql.NullString `db:"updated_by" json:"updatedBy"`
 	DeletedAt             sql.NullString `db:"deleted_at" json:"deletedAt"`
+	// CreatedBy             sql.NullString `db:"created_by" json:"createdBy"`
+	// UpdatedBy             sql.NullString `db:"updated_by" json:"updatedBy"`
 }
 
 type journeyOp struct{}

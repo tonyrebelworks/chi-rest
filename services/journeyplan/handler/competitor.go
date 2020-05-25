@@ -33,6 +33,7 @@ func (h *Contract) GetDetailCompany(w http.ResponseWriter, r *http.Request) {
 	res, err := usecase.UC{h.App}.GetDetailCompany(code)
 	if err != nil {
 		fmt.Println(err)
+		h.SendBadRequest(w, err.Error())
 		return
 	}
 
@@ -149,6 +150,7 @@ func (h *Contract) GetDetailProduct(w http.ResponseWriter, r *http.Request) {
 	res, err := usecase.UC{h.App}.GetDetailProduct(code)
 	if err != nil {
 		fmt.Println(err)
+		h.SendBadRequest(w, err.Error())
 		return
 	}
 
@@ -268,6 +270,7 @@ func (h *Contract) GetDetailPromotion(w http.ResponseWriter, r *http.Request) {
 	res, err := usecase.UC{h.App}.GetDetailPromotion(code)
 	if err != nil {
 		fmt.Println(err)
+		h.SendBadRequest(w, err.Error())
 		return
 	}
 

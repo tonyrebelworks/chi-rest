@@ -27,7 +27,7 @@ func RegisterRoutes(r *chi.Mux, app *bootstrap.App) {
 		r.Post("/journey", h.AddJourney)
 		r.Put("/journey/{code}", h.UpdateJourney)
 		r.Delete("/journey/{code}", h.DeleteJourney)
-		r.Get("/journey/report/{code}", h.GetReportJourney)
+		r.Get("/journey/report/{journeyid}", h.GetReportJourney)
 
 		//Journey Mobile
 		r.Get("/journeymobile", h.GetAllJourneyMobile)
@@ -36,7 +36,11 @@ func RegisterRoutes(r *chi.Mux, app *bootstrap.App) {
 		r.Get("/journey/interval", h.GetInterval)
 		r.Put("/journey/interval", h.UpdateInterval)
 		r.Post("/journey/trackingtime", h.AddTrackingTimeJourney)
+		r.Get("/journey/started/{userid}/{reportdate}", h.GetURLFirebaseStarted)
+		r.Get("/journey/reportJourney/{reportid}", h.GetByReportID)
+		r.Get("/journey/url/{userid}/{journeyid}/{reportdate}", h.GetURLFirebase)
 		r.Post("/journey/url", h.AddURLFirebase)
+		r.Delete("/journey/url/{code}", h.DeleteReportByID)
 
 		//Competitor Analysis
 		r.Get("/company", h.GetAllCompany)

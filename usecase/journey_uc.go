@@ -31,7 +31,7 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 
 	resMap := make([]map[string]interface{}, 0)
 	for _, a := range data {
-		dataActivity, err := model.ActivityOp.GetByJourneyCode(uc.DB, a.Code)
+		dataActivity, err := model.ActivityOp.GetByJourneyCode(uc.DB, "bq7e2l5hipgeufbrju5g")
 		if err != nil {
 			return nil, pagination, err
 		}
@@ -62,11 +62,11 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 		}
 
 		activityRes := []viewmodel.ActivityVM{}
-		for _, a := range dataActivity {
+		for _, ac := range dataActivity {
 			tempRes := viewmodel.ActivityVM{
-				UserID:   a.UserID,
-				Username: a.Username,
-				Datetime: a.Datetime.String,
+				// UserID:   a.UserID,
+				Username: ac.Username,
+				Datetime: a.CreatedAt.String,
 			}
 			activityRes = append(activityRes, tempRes)
 		}
@@ -81,7 +81,7 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 			for _, raw := range tmpDC {
 				v, err := strconv.Atoi(raw)
 				if err != nil {
-					log.Print(err)
+					// log.Print(err)
 					continue
 				}
 				datesCustomToInt = append(datesCustomToInt, v)
@@ -94,7 +94,7 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 			for _, raw := range tmpDow {
 				v, err := strconv.Atoi(raw)
 				if err != nil {
-					log.Print(err)
+					// log.Print(err)
 					continue
 				}
 				daysOfWeekToInt = append(daysOfWeekToInt, v)
@@ -106,7 +106,7 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 			for _, raw := range tmpDom {
 				v, err := strconv.Atoi(raw)
 				if err != nil {
-					log.Print(err)
+					// log.Print(err)
 					continue
 				}
 				datesOfMonthToInt = append(datesOfMonthToInt, v)
@@ -148,9 +148,9 @@ func (uc UC) GetAllJourney(types string, maxID, limit int) ([]map[string]interfa
 			"journeySchedule":  journeySchedule,
 			"activity":         activityRes,
 			"createdAt":        a.CreatedAt.String,
-			"createdBy":        a.CreatedBy.String,
+			"createdBy":        "admin",
 			"updatedAt":        a.UpdatedAt.String,
-			"updatedBy":        a.UpdatedBy.String,
+			"updatedBy":        "admin",
 		})
 	}
 
@@ -168,13 +168,13 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 	journeySchedule := data.JourneySchedule
 	var typeJourneySchedule string
 
-	if journeySchedule == 1 {
+	if journeySchedule == 0 {
 		typeJourneySchedule = "daily"
 	}
-	if journeySchedule == 2 {
+	if journeySchedule == 1 {
 		typeJourneySchedule = "weekly"
 	}
-	if journeySchedule == 3 {
+	if journeySchedule == 2 {
 		typeJourneySchedule = "monthly"
 	}
 
@@ -197,17 +197,17 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 	email := data.EmailTo
 	arrEmail := strings.Split(email, "|")
 
-	dataActivity, err := model.ActivityOp.GetByJourneyCode(uc.DB, code)
+	dataActivity, err := model.ActivityOp.GetByJourneyCode(uc.DB, "bq7e2l5hipgeufbrju5g")
 	if err != nil {
 		return viewmodel.JourneyPlanVM{}, err
 	}
 
 	activityRes := []viewmodel.ActivityVM{}
-	for _, a := range dataActivity {
+	for _, ac := range dataActivity {
 		tempRes := viewmodel.ActivityVM{
-			UserID:   a.UserID,
-			Username: a.Username,
-			Datetime: a.Datetime.String,
+			// UserID:   a.UserID,
+			Username: ac.Username,
+			Datetime: data.CreatedAt.String,
 		}
 		activityRes = append(activityRes, tempRes)
 
@@ -223,7 +223,7 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 		for _, raw := range tmpDC {
 			v, err := strconv.Atoi(raw)
 			if err != nil {
-				log.Print(err)
+				// log.Print(err)
 				continue
 			}
 			datesCustomToInt = append(datesCustomToInt, v)
@@ -236,7 +236,7 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 		for _, raw := range tmpDow {
 			v, err := strconv.Atoi(raw)
 			if err != nil {
-				log.Print(err)
+				// log.Print(err)
 				continue
 			}
 			daysOfWeekToInt = append(daysOfWeekToInt, v)
@@ -248,7 +248,7 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 		for _, raw := range tmpDom {
 			v, err := strconv.Atoi(raw)
 			if err != nil {
-				log.Print(err)
+				// log.Print(err)
 				continue
 			}
 			datesOfMonthToInt = append(datesOfMonthToInt, v)
@@ -278,9 +278,9 @@ func (uc UC) GetDetailJourney(code string) (viewmodel.JourneyPlanVM, error) {
 		DateOfMonth:      datesOfMonthToInt,
 		Activity:         activityRes,
 		CreatedAt:        data.CreatedAt.String,
-		CreatedBy:        "",
+		CreatedBy:        "admin",
 		UpdatedAt:        data.UpdatedAt.String,
-		UpdatedBy:        "",
+		UpdatedBy:        "admin",
 	}
 
 	return res, err
@@ -399,11 +399,11 @@ func (uc UC) GetDetailJourneyMobile(code string) (viewmodel.JourneyPlanMobileVM,
 	}
 
 	activityRes := []viewmodel.ActivityVM{}
-	for _, a := range dataActivity {
+	for _, ac := range dataActivity {
 		tempRes := viewmodel.ActivityVM{
-			UserID:   a.UserID,
-			Username: a.Username,
-			Datetime: a.Datetime.String,
+			// UserID:   a.UserID,
+			Username: ac.Username,
+			Datetime: data.CreatedAt.String,
 		}
 		activityRes = append(activityRes, tempRes)
 
@@ -438,14 +438,21 @@ func (uc UC) GetDetailJourneyMobile(code string) (viewmodel.JourneyPlanMobileVM,
 }
 
 // GetReportJourney ...
-func (uc UC) GetReportJourney(code string) (viewmodel.ReportJourneyPlanVM, error) {
-	data, err := model.JourneyOp.GetDetail(uc.DB, code)
+func (uc UC) GetReportJourney(journeyID string) ([]map[string]interface{}, error) {
+
+	data, err := model.ReportFirebaseOp.GetAllReportJourney(uc.DB, journeyID)
 	if err != nil {
-		return viewmodel.ReportJourneyPlanVM{}, err
+		return nil, err
+	}
+	// fmt.Println(journeyID)
+
+	dataJourney, err := model.JourneyOp.GetDetail(uc.DB, journeyID)
+	if err != nil {
+		return nil, err
 	}
 
 	sitesRes := make([]viewmodel.SitesVM, 0)
-	site := data.Sites
+	site := dataJourney.Sites
 	arrSites := strings.Split(site, "|")
 	for i := range arrSites {
 		sitesRes = append(sitesRes, viewmodel.SitesVM{
@@ -454,30 +461,15 @@ func (uc UC) GetReportJourney(code string) (viewmodel.ReportJourneyPlanVM, error
 	}
 
 	questionnairesRes := make([]viewmodel.QuestionnairesVM, 0)
-	questionnaires := data.Questionnaires
+	questionnaires := dataJourney.Questionnaires
 	arrQuestionnaires := strings.Split(questionnaires, "|")
 	for i := range arrQuestionnaires {
 		questionnairesRes = append(questionnairesRes, viewmodel.QuestionnairesVM{
 			QuestionnairesID: arrQuestionnaires[i],
 		})
 	}
-
-	dataRep, err := model.ReportFirebaseOp.GetByJourneyCode(uc.DB, code)
-	if err != nil {
-		return viewmodel.ReportJourneyPlanVM{}, err
-	}
-
-	reportsRes := []viewmodel.ReportsVM{}
-	for _, a := range dataRep {
-		tempRes := viewmodel.ReportsVM{
-			URL: a.URL,
-		}
-		reportsRes = append(reportsRes, tempRes)
-
-	}
-
 	assignedAuditorRes := make([]viewmodel.AssignedAuditorVM, 0)
-	assignAud := data.Salesman
+	assignAud := dataJourney.Salesman
 	arrAssignAud := strings.Split(assignAud, "|")
 	for i := range arrAssignAud {
 		assignedAuditorRes = append(assignedAuditorRes, viewmodel.AssignedAuditorVM{
@@ -485,27 +477,9 @@ func (uc UC) GetReportJourney(code string) (viewmodel.ReportJourneyPlanVM, error
 		})
 	}
 
-	dataTraTi, err := model.TrackingTimeOp.GetByJourneyCode(uc.DB, code, "")
-	if err != nil {
-		return viewmodel.ReportJourneyPlanVM{}, err
-	}
-
-	traTiRes := []viewmodel.TrackingTimeGPSVM{}
-	for _, a := range dataTraTi {
-		tempRes := viewmodel.TrackingTimeGPSVM{
-			TrackingTime: a.CreatedAt.String,
-			Coordinates: viewmodel.CoordinatesVM{
-				Lat:  a.Latitude,
-				Long: a.Longitude,
-			},
-		}
-		traTiRes = append(traTiRes, tempRes)
-
-	}
-
-	datesCustom := data.DatesCustom.String
-	daysOfWeek := data.DaysOfWeek.String
-	datesOfMonth := data.DatesOfMonth.String
+	datesCustom := dataJourney.DatesCustom.String
+	daysOfWeek := dataJourney.DaysOfWeek.String
+	datesOfMonth := dataJourney.DatesOfMonth.String
 
 	tmpDC := strings.Split(datesCustom, ",")
 	datesCustomToInt := make([]int, 0, len(tmpDC))
@@ -545,39 +519,89 @@ func (uc UC) GetReportJourney(code string) (viewmodel.ReportJourneyPlanVM, error
 		}
 	}
 
-	res := viewmodel.ReportJourneyPlanVM{
-		ID:              data.ID,
-		Code:            data.Code,
-		JourneyName:     data.JourneyName,
-		DepartmentKey:   data.DepartmentKey,
-		JourneySchedule: data.JourneySchedule,
-		DateCustom:      datesCustomToInt,
-		DaysOfWeek:      daysOfWeekToInt,
-		DateOfMonth:     datesOfMonthToInt,
-		AssignedAuditor: assignedAuditorRes,
-		Sites:           sitesRes,
-		Questionnaires:  questionnairesRes,
-		Reports:         reportsRes,
-		Signatures:      data.Signatures,
-		StartJourney:    data.StartJourney.String,
-		FinishJourney:   data.FinishJourney.String,
-		CreatedAt:       data.CreatedAt.String,
-		TrackingTimeGPS: traTiRes,
+	resMap := make([]map[string]interface{}, 0)
+	for _, rep := range data {
+		if err != nil {
+			return nil, err
+		}
+
+		repURL := rep.URL.String
+		arrRepURL := strings.Split(repURL, "|")
+
+		dataTraTi, err := model.TrackingTimeOp.GetByJourneyCode(uc.DB, rep.ReportID)
+		if err != nil {
+			return nil, err
+		}
+
+		traTiRes := []viewmodel.TrackingTimeGPSVM{}
+		for _, a := range dataTraTi {
+			tempRes := viewmodel.TrackingTimeGPSVM{
+				TrackingTime: a.CreatedAt.String,
+				Coordinates: viewmodel.CoordinatesVM{
+					Lat:  a.Latitude,
+					Long: a.Longitude,
+				},
+			}
+			traTiRes = append(traTiRes, tempRes)
+
+		}
+		resMap = append(resMap, map[string]interface{}{
+			"id":              dataJourney.ID,
+			"code":            dataJourney.Code,
+			"journeyName":     dataJourney.JourneyName,
+			"departmentKey":   dataJourney.DepartmentKey,
+			"journeySchedule": dataJourney.JourneySchedule,
+			"dateCustom":      datesCustomToInt,
+			"daysOfWeek":      daysOfWeekToInt,
+			"dateOfMonth":     datesOfMonthToInt,
+			"assignedAuditor": assignedAuditorRes,
+			"sites":           sitesRes,
+			"questionnaires":  questionnairesRes,
+			"reports": map[string]interface{}{
+				"reportID":   rep.ReportID,
+				"userID":     rep.UserID,
+				"journeyID":  rep.JourneyID,
+				"url":        arrRepURL,
+				"start":      rep.Start.String,
+				"end":        rep.End.String,
+				"reportDate": rep.ReportDate.String,
+			},
+			"signatures":      dataJourney.Signatures,
+			"startJourney":    dataJourney.StartJourney.String,
+			"finishJourney":   dataJourney.FinishJourney.String,
+			"createdAt":       dataJourney.CreatedAt.String,
+			"trackingTimeGPS": traTiRes,
+
+			// ReportID:   rep.ReportID,
+			// UserID:     rep.UserID,
+			// JourneyID:  rep.JourneyID,
+			// URL:        rep.URL.String,
+			// Start:      rep.Start.String,
+			// End:        rep.End.String,
+			// ReportDate: rep.ReportDate.String,
+		})
 	}
 
-	return res, err
+	return resMap, err
+}
+
+// DeleteReportByID ...
+func (uc UC) DeleteReportByID(code string) ([]*model.ReportFirebaseEntity, error) {
+
+	dt, err := model.ReportFirebaseOp.DeleteReportByID(uc.DB, code, time.Now().UTC())
+	return dt, err
 }
 
 // AddTrackingTimeJourney ...
 func (uc UC) AddTrackingTimeJourney(
-	journeyCode string,
+	reportJourneyID string,
 	userCode string,
 	latitude string,
 	longitude string,
 
 ) (int64, error) {
 
-	dt, err := model.TrackingTimeOp.Store(uc.DB, journeyCode, userCode, latitude, longitude, time.Now().UTC())
+	dt, err := model.TrackingTimeOp.Store(uc.DB, reportJourneyID, userCode, latitude, longitude, time.Now().UTC())
 	return dt, err
 }
 
@@ -606,14 +630,138 @@ func (uc UC) GetAllJourneyMobile() ([]viewmodel.GetAllJourneyPlanMobileVM, error
 	return resMap, err
 }
 
-// AddURLFirebase ...
-func (uc UC) AddURLFirebase(
-	url string,
+// GetReportJourneyByParam ...
+func (uc UC) GetReportJourneyByParam(userID string, journeyID string, reportDate string) (map[string]interface{}, error) {
+
+	resMap := make(map[string]interface{}, 0)
+
+	data, err := model.ReportFirebaseOp.GetByParam(uc.DB, userID, journeyID, reportDate)
+	if err != nil {
+		return nil, err
+	}
+
+	resMap = map[string]interface{}{
+		"reportID":   data.ReportID,
+		"userID":     data.UserID,
+		"journeyID":  data.JourneyID,
+		"url":        data.URL.String,
+		"start":      data.Start.String,
+		"end":        data.End.String,
+		"status":     data.Status,
+		"reportDate": data.ReportDate.String,
+	}
+
+	return resMap, err
+}
+
+// GetReportJourneyByParamStarted ...
+func (uc UC) GetReportJourneyByParamStarted(userID string, reportDate string) (map[string]interface{}, error) {
+
+	resMap := make(map[string]interface{}, 0)
+
+	data, err := model.ReportFirebaseOp.GetByParamStarted(uc.DB, userID, reportDate)
+	if err != nil {
+		return nil, err
+	}
+
+	resMap = map[string]interface{}{
+		"reportID":   data.ReportID,
+		"userID":     data.UserID,
+		"journeyID":  data.JourneyID,
+		"url":        data.URL.String,
+		"start":      data.Start.String,
+		"end":        data.End.String,
+		"status":     data.Status,
+		"reportDate": data.ReportDate.String,
+	}
+
+	return resMap, err
+}
+
+// GetByReportID ...
+func (uc UC) GetByReportID(reportID string) (map[string]interface{}, error) {
+
+	resMap := make(map[string]interface{}, 0)
+
+	data, err := model.ReportFirebaseOp.GetByReportID(uc.DB, reportID)
+	if err != nil {
+		return nil, err
+	}
+
+	resMap = map[string]interface{}{
+		"reportID":   data.ReportID,
+		"userID":     data.UserID,
+		"journeyID":  data.JourneyID,
+		"url":        data.URL.String,
+		"start":      data.Start.String,
+		"end":        data.End.String,
+		"status":     data.Status,
+		"reportDate": data.ReportDate.String,
+	}
+
+	return resMap, err
+}
+
+// GetReportJourneyByUJR ...
+func (uc UC) GetReportJourneyByUJR(
+	userID string,
 	journeyID string,
+	url string,
+	start string,
+	end string,
+	status int,
+	reportDate string,
+
+) ([]map[string]interface{}, error) {
+
+	// if userID != "" && journeyID != "" && reportDate != "" {
+	// 	dt, err := model.ReportFirebaseOp.Store(uc.DB, url, journeyID, time.Now().UTC())
+	// 	return dt, err
+	// }
+	resMap := make([]map[string]interface{}, 0)
+	data, err := model.ReportFirebaseOp.GetReportID(uc.DB, userID, journeyID, reportDate)
+
+	resMap = append(resMap, map[string]interface{}{
+		"reportID":   data.ReportID,
+		"userID":     data.UserID,
+		"journeyID":  data.JourneyID,
+		"url":        data.URL.String,
+		"start":      data.Start.String,
+		"end":        data.End.String,
+		"status":     data.Status,
+		"reportDate": data.ReportDate.String,
+	})
+
+	return resMap, err
+
+}
+
+// StoreReportJourney ...
+func (uc UC) StoreReportJourney(
+	code string,
+	userID string,
+	journeyID string,
+	url string,
+	start string,
+	end string,
+	status int,
+	reportDate string,
 
 ) (int64, error) {
 
-	dt, err := model.ReportFirebaseOp.Store(uc.DB, url, journeyID, time.Now().UTC())
+	dt, err := model.ReportFirebaseOp.Store(uc.DB, code, userID, journeyID, url, start, end, status, reportDate, time.Now().UTC())
+	return dt, err
+}
+
+// UpdateReportJourney ...
+func (uc UC) UpdateReportJourney(
+	code string,
+	url string,
+	end string,
+
+) ([]*model.ReportFirebaseEntity, error) {
+
+	dt, err := model.ReportFirebaseOp.Update(uc.DB, code, url, end)
 	return dt, err
 }
 

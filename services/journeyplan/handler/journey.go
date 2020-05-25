@@ -64,6 +64,7 @@ func (h *Contract) GetDetailJourney(w http.ResponseWriter, r *http.Request) {
 	res, err := usecase.UC{h.App}.GetDetailJourney(code)
 	if err != nil {
 		fmt.Println(err)
+		h.SendBadRequest(w, err.Error())
 		return
 	}
 
@@ -75,6 +76,7 @@ func (h *Contract) GetDetailJourney(w http.ResponseWriter, r *http.Request) {
 func (h *Contract) AddJourney(w http.ResponseWriter, r *http.Request) {
 	var err error
 	req := request.AddJourneyRequest{}
+	// reqActivity := request.AddJourneyRequest{}
 
 	if err = h.Bind(r, &req); err != nil {
 		h.SendBadRequest(w, err.Error())
@@ -343,10 +345,11 @@ func (h *Contract) GetDetailJourneyMobile(w http.ResponseWriter, r *http.Request
 
 // GetReportJourney ...
 func (h *Contract) GetReportJourney(w http.ResponseWriter, r *http.Request) {
-	code := chi.URLParam(r, "code")
-	res, err := usecase.UC{h.App}.GetReportJourney(code)
+	journeyID := chi.URLParam(r, "journeyid")
+	res, err := usecase.UC{h.App}.GetReportJourney(journeyID)
 	if err != nil {
 		fmt.Println(err)
+		h.SendBadRequest(w, err.Error())
 		return
 	}
 
@@ -368,13 +371,13 @@ func (h *Contract) AddTrackingTimeJourney(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	JourneyID := req.JourneyID
+	ReportJourneyID := req.ReportJourneyID
 	Latitude := req.Latitude
 	Longitude := req.Longitude
 	UserCode := ""
 
 	lastID, err := usecase.UC{h.App}.AddTrackingTimeJourney(
-		JourneyID,
+		ReportJourneyID,
 		UserCode,
 		Latitude,
 		Longitude,
@@ -399,6 +402,54 @@ func (h *Contract) GetAllJourneyMobile(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// GetURLFirebase ...
+func (h *Contract) GetURLFirebase(w http.ResponseWriter, r *http.Request) {
+	userID := chi.URLParam(r, "userid")
+	journeyID := chi.URLParam(r, "journeyid")
+	reporDate := chi.URLParam(r, "reportdate")
+
+	res, err := usecase.UC{h.App}.GetReportJourneyByParam(userID, journeyID, reporDate)
+	if err != nil {
+		fmt.Println(err)
+		h.SendBadRequest(w, err.Error())
+		return
+	}
+
+	h.SendSuccess(w, res, nil)
+	return
+}
+
+// GetURLFirebaseStarted ...
+func (h *Contract) GetURLFirebaseStarted(w http.ResponseWriter, r *http.Request) {
+	userID := chi.URLParam(r, "userid")
+	reportDate := chi.URLParam(r, "reportdate")
+
+	res, err := usecase.UC{h.App}.GetReportJourneyByParamStarted(userID, reportDate)
+	if err != nil {
+		fmt.Println(err)
+		h.SendBadRequest(w, err.Error())
+		return
+	}
+
+	h.SendSuccess(w, res, nil)
+	return
+}
+
+// GetByReportID ...
+func (h *Contract) GetByReportID(w http.ResponseWriter, r *http.Request) {
+	reportID := chi.URLParam(r, "reportid")
+
+	res, err := usecase.UC{h.App}.GetByReportID(reportID)
+	if err != nil {
+		fmt.Println(err)
+		h.SendBadRequest(w, err.Error())
+		return
+	}
+
+	h.SendSuccess(w, res, nil)
+	return
+}
+
 // AddURLFirebase ...
 func (h *Contract) AddURLFirebase(w http.ResponseWriter, r *http.Request) {
 	var err error
@@ -413,19 +464,55 @@ func (h *Contract) AddURLFirebase(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	URL := req.URL
+	Code := req.ReportID
+	UserID := req.UserID
 	JourneyID := req.JourneyID
+	URL := req.URL
+	Start := req.Start
+	End := req.End
+	Status := req.Status
+	ReportDate := req.ReportDate
 
-	lastID, err := usecase.UC{h.App}.AddURLFirebase(
-		URL,
-		JourneyID,
-	)
-	if err != nil {
-		h.SendBadRequest(w, err.Error())
-		return
+	if Start == "" {
+		fmt.Println("update")
+		res, err := usecase.UC{h.App}.UpdateReportJourney(
+			Code, URL, End)
+		if err != nil {
+			h.SendBadRequest(w, err.Error())
+			return
+		}
+		h.SendSuccess(w, res, nil)
+
+	} else {
+		res, err := usecase.UC{h.App}.GetReportJourneyByUJR(UserID, JourneyID, URL, Start, End, Status, ReportDate)
+		if err != nil {
+			// fmt.Println(err)
+			fmt.Println("insert new row")
+
+			code := xid.New().String()
+
+			lastID, err := usecase.UC{h.App}.StoreReportJourney(
+				code,
+				UserID,
+				JourneyID,
+				URL,
+				Start,
+				End,
+				Status,
+				ReportDate,
+			)
+			if err != nil {
+				h.SendBadRequest(w, err.Error())
+				return
+			}
+
+			h.SendSuccess(w, map[string]interface{}{}, lastID)
+			return
+		}
+
+		h.SendSuccess(w, res, nil)
 	}
 
-	h.SendSuccess(w, map[string]interface{}{}, lastID)
 	return
 }
 
@@ -436,6 +523,20 @@ func (h *Contract) GetInterval(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
+	h.SendSuccess(w, res, nil)
+	return
+}
+
+// DeleteReportByID ...
+func (h *Contract) DeleteReportByID(w http.ResponseWriter, r *http.Request) {
+
+	code := chi.URLParam(r, "code")
+	res, err := usecase.UC{h.App}.DeleteReportByID(code)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
 	h.SendSuccess(w, res, nil)
 	return
 }

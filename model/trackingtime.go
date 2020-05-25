@@ -10,8 +10,8 @@ import (
 // TrackingTimeEntity ...
 type TrackingTimeEntity struct {
 	ID          uint           `db:"id" json:"id"`
-	JourneyCode string         `db:"journey_code" json:"journeyCode"`
-	UserCode    string         `db:"user_code" json:"userCode"`
+	JourneyCode sql.NullString `db:"journey_code" json:"journeyCode"`
+	ReportID    string         `db:"report_id" json:"reportID"`
 	Latitude    string         `db:"latitude" json:"latitude"`
 	Longitude   string         `db:"longitude" json:"longitude"`
 	CreatedAt   sql.NullString `db:"created_at" json:"createdAt"`
@@ -24,11 +24,11 @@ type trackingTimeOp struct{}
 var TrackingTimeOp = &trackingTimeOp{}
 
 // GetByJourneyCode ...
-func (op *trackingTimeOp) GetByJourneyCode(db *sqlx.DB, journeyCode string, userCode string) ([]TrackingTimeEntity, error) {
+func (op *trackingTimeOp) GetByJourneyCode(db *sqlx.DB, userCode string) ([]TrackingTimeEntity, error) {
 	var err error
 
 	res := []TrackingTimeEntity{}
-	err = db.Select(&res, "SELECT id, journey_code, user_code, latitude, longitude, created_at, deleted_at FROM time_tracking WHERE journey_code = ? AND user_code = ? ", journeyCode, userCode)
+	err = db.Select(&res, "SELECT id, journey_code, report_id, latitude, longitude, created_at, deleted_at FROM time_tracking WHERE  report_id = ? ", userCode)
 
 	// fmt.Println(err)
 	return res, err
@@ -37,7 +37,7 @@ func (op *trackingTimeOp) GetByJourneyCode(db *sqlx.DB, journeyCode string, user
 // Store ...
 func (op *trackingTimeOp) Store(
 	db *sqlx.DB,
-	journeyCode string,
+	reportJourneyID string,
 	userCode string,
 	latitude string,
 	longitude string,
@@ -47,8 +47,8 @@ func (op *trackingTimeOp) Store(
 
 	createdAt := changedAt.Format("2006-01-02 15:04:05")
 	// userCode := "5qFKQb4kNJVFGsDBTp1NVrKojn12"
-	var sql = "INSERT INTO time_tracking (journey_code, user_code, latitude, longitude, created_at) VALUES ( ?, ?, ?, ?, ?)"
-	res, err := db.Exec(sql, journeyCode, userCode, latitude, longitude, createdAt)
+	var sql = "INSERT INTO time_tracking (report_id, latitude, longitude, created_at) VALUES ( ?, ?, ?, ?)"
+	res, err := db.Exec(sql, reportJourneyID, latitude, longitude, createdAt)
 	if err != nil {
 		return 0, err
 	}

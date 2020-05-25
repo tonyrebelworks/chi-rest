@@ -4,12 +4,12 @@ package request
 type AddJourneyRequest struct {
 	JourneyName     string            `json:"journeyName" validate:"required"`
 	DepartmentKey   string            `json:"departmentID" validate:"required"`
-	JourneySchedule int64             `json:"journeySchedule" validate:"required"`
+	JourneySchedule int64             `json:"journeySchedule"`
 	AssignedAuditor []AssignedAuditor `json:"assignedAuditor" validate:"required"`
 	Sites           []Sites           `json:"sites" validate:"required"`
 	Questionnaires  []Questionnaires  `json:"questionnaires" validate:"required"`
-	Signatures      int64             `json:"signatures" validate:"required"`
-	RequireSelfie   int64             `json:"requireSelfie" validate:"required"`
+	Signatures      int64             `json:"signatures"`
+	RequireSelfie   int64             `json:"requireSelfie"`
 	DatesCustom     []DatesCustom     `json:"datesCustom" `
 	DaysOfWeek      []DaysOfWeek      `json:"daysOfWeek" `
 	DatesOfMonth    []DatesOfMonth    `json:"datesOfMonth"`
@@ -25,12 +25,12 @@ type AddJourneyRequest struct {
 type UpdateJourneyRequest struct {
 	JourneyName     string            `json:"journeyName" validate:"required"`
 	DepartmentKey   string            `json:"departmentID" validate:"required"`
-	JourneySchedule int64             `json:"journeySchedule" validate:"required"`
+	JourneySchedule int64             `json:"journeySchedule"`
 	AssignedAuditor []AssignedAuditor `json:"assignedAuditor" validate:"required"`
 	Sites           []Sites           `json:"sites" validate:"required"`
 	Questionnaires  []Questionnaires  `json:"questionnaires" validate:"required"`
-	Signatures      int64             `json:"signatures" validate:"required"`
-	RequireSelfie   int64             `json:"requireSelfie" validate:"required"`
+	Signatures      int64             `json:"signatures"`
+	RequireSelfie   int64             `json:"requireSelfie"`
 	Person          string            `json:"person"`
 	DatesCustom     []DatesCustom     `json:"datesCustom" `
 	DaysOfWeek      []DaysOfWeek      `json:"daysOfWeek" `
@@ -72,15 +72,21 @@ type UpdateTimeJourneyRequest struct {
 
 // AddTrackingTimeJourneyRequest ...
 type AddTrackingTimeJourneyRequest struct {
-	JourneyID string `json:"journeyID" validate:"required"`
-	Latitude  string `json:"latitude" validate:"required"`
-	Longitude string `json:"longitude" validate:"required"`
+	ReportJourneyID string `json:"reportJourneyID" validate:"required"`
+	Latitude        string `json:"latitude" validate:"required"`
+	Longitude       string `json:"longitude" validate:"required"`
 }
 
 // AddURLFirebaseRequest ...
 type AddURLFirebaseRequest struct {
-	JourneyID string `json:"journeyID" validate:"required"`
-	URL       string `json:"url" validate:"required"`
+	ReportID   string `json:"reportID"`
+	UserID     string `json:"userID" `
+	JourneyID  string `json:"journeyID"`
+	URL        string `json:"url"`
+	Start      string `json:"start"`
+	End        string `json:"end"`
+	Status     int    `json:"status"`
+	ReportDate string `json:"reportDate"`
 }
 
 // DatesCustom ...
@@ -101,4 +107,11 @@ type DatesOfMonth struct {
 // UpdateInterval ...
 type UpdateInterval struct {
 	TimePerSecond int `json:"timePerSecond" validate:"required"`
+}
+
+// AddActivity ...
+type AddActivity struct {
+	UserCode  string `json:"userCode"`
+	Username  string `json:"username"`
+	JourneyID string `json:"journeyID"`
 }

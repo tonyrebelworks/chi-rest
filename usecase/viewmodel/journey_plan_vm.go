@@ -131,7 +131,7 @@ type EmailTargetsVM struct {
 
 // ActivityVM ...
 type ActivityVM struct {
-	UserID   string `json:"userID"`
+	// UserID   string `json:"userID"`
 	Username string `json:"username"`
 	Datetime string `json:"datetime"`
 }
@@ -226,7 +226,13 @@ type GetAllJourneyPlanMobileVM struct {
 
 // ReportsVM ...
 type ReportsVM struct {
-	URL string `json:"url"`
+	ReportID   string `json:"reportID"`
+	UserID     string `json:"userID"`
+	JourneyID  string `json:"journeyID"`
+	URL        string `json:"url"`
+	Start      string `json:"start"`
+	End        string `json:"end"`
+	ReportDate string `json:"reportDate"`
 }
 
 // GetIntervalVM ...
